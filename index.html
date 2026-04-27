@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BIM и лазерное сканирование</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              ink: "#090d14",
+              steel: "#111827",
+              accent: "#00e5ff",
+              glow: "#7dd3fc",
+            },
+            boxShadow: {
+              neon: "0 0 40px rgba(0, 229, 255, 0.18)",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="./vendor/gsap.min.js"></script>
+    <script src="./vendor/ScrollTrigger.min.js"></script>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+
+      body {
+        background: #0b0f16;
+      }
+
+      .grid-overlay {
+        background-image:
+          linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+        background-size: 44px 44px;
+      }
+
+      .step-card.active {
+        border-color: rgba(148, 163, 184, 0.9);
+        box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.35);
+      }
+    </style>
+  </head>
+  <body class="text-slate-100 antialiased">
+    <div class="fixed inset-0 -z-10 grid-overlay opacity-20"></div>
+
+    <header class="relative mx-auto max-w-7xl px-6 pb-24 pt-10 md:px-10 lg:px-12 lg:pb-32 lg:pt-16">
+      <div class="flex items-center justify-between">
+        <div class="text-xs tracking-[0.35em] text-slate-300 md:text-sm">DIGITAL SURVEY LAB</div>
+        <div class="rounded-full border border-slate-500/40 px-4 py-2 text-[11px] tracking-[0.2em] text-slate-300">
+          LOD 400 READY
+        </div>
+      </div>
+      <section class="mt-14 grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+        <div>
+          <p class="mb-6 text-sm uppercase tracking-[0.3em] text-slate-400">BIM + Laser Scanning</p>
+          <h1 class="max-w-4xl text-4xl font-semibold leading-tight md:text-6xl lg:text-7xl">
+            ОЦИФРОВКА<br />
+            РЕАЛЬНОСТИ
+          </h1>
+          <p class="mt-7 max-w-2xl text-base text-slate-300 md:text-lg">
+            Создаём цифровую копию объекта на базе облака точек, реверс-инжиниринга и BIM-моделирования
+            до уровня детализации LOD 400.
+          </p>
+          <a
+            href="#cta"
+            class="mt-9 inline-flex items-center gap-3 rounded-md border border-slate-500/60 bg-slate-800/40 px-7 py-4 text-sm font-medium uppercase tracking-[0.2em] text-slate-100 transition hover:bg-slate-700/50"
+          >
+            Обсудить проект
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+        <div class="rounded-2xl border border-slate-700/70 bg-slate-900/45 p-6 backdrop-blur">
+          <p class="text-xs uppercase tracking-[0.28em] text-slate-300">Точность и цифровизация</p>
+          <ul class="mt-5 space-y-3 text-sm text-slate-300">
+            <li>• Лазерное сканирование в плотности до 2 мм на 10 м</li>
+            <li>• Облако точек как источник истины</li>
+            <li>• Модели для проектирования, коллизий и эксплуатации</li>
+          </ul>
+        </div>
+      </section>
+    </header>
+
+    <main>
+      <section id="scrolly" class="relative border-y border-slate-800/80 bg-slate-950/45 py-16 md:py-24">
+        <div class="mx-auto grid max-w-7xl gap-10 px-6 md:px-10 lg:grid-cols-[1fr_1fr] lg:px-12">
+          <div class="space-y-24 pb-12 lg:pr-8">
+            <article class="step-card rounded-xl border border-slate-700/60 bg-slate-900/40 p-7 transition" data-step="0">
+              <p class="text-xs uppercase tracking-[0.24em] text-slate-400">01. Лазерное сканирование</p>
+              <h2 class="mt-3 text-2xl font-semibold">Сбор облака точек</h2>
+              <p class="mt-4 text-slate-300">
+                Полевая съёмка фиксирует геометрию объекта без потерь. Сканер формирует плотное серое облако
+                точек как первичный цифровой след.
+              </p>
+            </article>
+
+            <article class="step-card rounded-xl border border-slate-700/60 bg-slate-900/40 p-7 transition" data-step="1">
+              <p class="text-xs uppercase tracking-[0.24em] text-slate-400">02. Обработка данных</p>
+              <h2 class="mt-3 text-2xl font-semibold">Классификация и RGB-коррекция</h2>
+              <p class="mt-4 text-slate-300">
+                Регистрируем станции, очищаем шум, объединяем фрагменты. Точки получают реальные RGB-значения
+                для точной интерпретации текущего состояния объекта.
+              </p>
+            </article>
+
+            <article class="step-card rounded-xl border border-slate-700/60 bg-slate-900/40 p-7 transition" data-step="2">
+              <p class="text-xs uppercase tracking-[0.24em] text-slate-400">03. Scan-to-BIM</p>
+              <h2 class="mt-3 text-2xl font-semibold">Реверс-инжиниринг в BIM</h2>
+              <p class="mt-4 text-slate-300">
+                По облаку точек формируем конструктивную и инженерную модель. Каркасная сетка визуализирует
+                переход от данных съёмки к управляемой цифровой копии.
+              </p>
+            </article>
+
+            <article class="step-card rounded-xl border border-slate-700/60 bg-slate-900/40 p-7 transition" data-step="3">
+              <p class="text-xs uppercase tracking-[0.24em] text-slate-400">04. Контроль коллизий</p>
+              <h2 class="mt-3 text-2xl font-semibold">Проверка пересечений</h2>
+              <p class="mt-4 text-slate-300">
+                Прозрачная сцена показывает внутренние сети и потенциальные коллизии. Получаете основу для
+                координации подрядчиков и снижения рисков на стройке.
+              </p>
+            </article>
+          </div>
+
+          <div class="lg:relative overflow-visible">
+            <div class="top-8 h-[82vh] lg:sticky">
+              <div class="relative -mx-10 h-[112%] w-[calc(100%+5rem)] -translate-y-[6%] bg-transparent md:-mx-12 md:w-[calc(100%+6rem)] lg:-mx-16 lg:w-[calc(100%+8rem)]">
+                <canvas id="sceneCanvas" class="h-full w-full"></canvas>
+                <div class="pointer-events-none absolute left-4 top-4 rounded bg-slate-900/80 px-3 py-2 text-[11px] tracking-[0.2em] text-slate-200">
+                  MODEL.PLY
+                </div>
+                <div id="modelStatus" class="pointer-events-none absolute bottom-4 left-4 rounded bg-slate-900/75 px-3 py-2 text-[11px] tracking-[0.16em] text-slate-200">
+                  Загрузка модели...
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-7xl px-6 py-16 md:px-10 md:py-24 lg:px-12">
+        <div class="mb-10 flex flex-wrap items-end justify-between gap-5">
+          <div>
+            <p class="text-xs uppercase tracking-[0.24em] text-slate-400">Услуги</p>
+            <h3 class="mt-3 text-3xl font-semibold md:text-4xl">Инженерные задачи под ключ</h3>
+          </div>
+          <p class="max-w-xl text-sm text-slate-300">
+            От обмеров до координации дисциплин: работаем с промышленными и гражданскими объектами.
+          </p>
+        </div>
+        <div class="grid gap-5 md:grid-cols-2">
+          <article class="rounded-xl border border-slate-700/70 bg-slate-900/35 p-6">
+            <h4 class="text-xl font-semibold">Архитектурные обмеры</h4>
+            <p class="mt-3 text-sm text-slate-300">План, фасады, разрезы и исходные данные для реконструкции.</p>
+          </article>
+          <article class="rounded-xl border border-slate-700/70 bg-slate-900/35 p-6">
+            <h4 class="text-xl font-semibold">Промышленный BIM</h4>
+            <p class="mt-3 text-sm text-slate-300">Цифровые двойники цехов, технологических линий и трубопроводов.</p>
+          </article>
+          <article class="rounded-xl border border-slate-700/70 bg-slate-900/35 p-6">
+            <h4 class="text-xl font-semibold">Контроль строительства</h4>
+            <p class="mt-3 text-sm text-slate-300">Сравнение факта и проекта, журнал отклонений, аналитика коллизий.</p>
+          </article>
+          <article class="rounded-xl border border-slate-700/70 bg-slate-900/35 p-6">
+            <h4 class="text-xl font-semibold">Фасадная съёмка</h4>
+            <p class="mt-3 text-sm text-slate-300">Высокоточные данные для реставрации, модулей и навесных систем.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="cta" class="border-t border-slate-800/80 bg-slate-950/45 py-16 md:py-24">
+        <div class="mx-auto grid max-w-7xl gap-8 px-6 md:px-10 lg:grid-cols-[1fr_1fr] lg:px-12">
+          <div>
+            <p class="text-xs uppercase tracking-[0.24em] text-slate-400">Инженерный опросник</p>
+            <h3 class="mt-3 text-3xl font-semibold md:text-4xl">Запрос на цифровую копию объекта</h3>
+            <p class="mt-5 max-w-lg text-sm text-slate-300">
+              Укажите тип объекта, цели BIM и ожидаемый уровень детализации. Подготовим техническое предложение
+              и дорожную карту проекта.
+            </p>
+          </div>
+          <form class="space-y-4 rounded-2xl border border-slate-700/70 bg-slate-900/40 p-6" action="#" method="post">
+            <label class="block text-sm">
+              <span class="mb-2 block text-slate-300">Тип объекта</span>
+              <input
+                class="w-full rounded-md border border-slate-600 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none ring-slate-400/70 placeholder:text-slate-500 focus:ring"
+                name="object"
+                placeholder="Завод, БЦ, жилой комплекс..."
+              />
+            </label>
+            <label class="block text-sm">
+              <span class="mb-2 block text-slate-300">Целевой уровень детализации</span>
+              <input
+                class="w-full rounded-md border border-slate-600 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none ring-slate-400/70 placeholder:text-slate-500 focus:ring"
+                name="lod"
+                placeholder="LOD 300 / LOD 400"
+              />
+            </label>
+            <label class="block text-sm">
+              <span class="mb-2 block text-slate-300">Ключевая задача</span>
+              <textarea
+                class="min-h-28 w-full rounded-md border border-slate-600 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none ring-slate-400/70 placeholder:text-slate-500 focus:ring"
+                name="goal"
+                placeholder="Координация инженерных систем, поиск коллизий, реверс-инжиниринг..."
+              ></textarea>
+            </label>
+            <button
+              type="submit"
+              class="w-full rounded-md border border-slate-500/70 bg-slate-800/40 px-5 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-slate-100 transition hover:bg-slate-700/55"
+            >
+              Отправить запрос
+            </button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      import * as THREE from "./vendor/three.module.js";
+      import { PLYLoader } from "./vendor/PLYLoader.mjs";
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      const canvas = document.getElementById("sceneCanvas");
+      const modelStatus = document.getElementById("modelStatus");
+      const stepCards = Array.from(document.querySelectorAll(".step-card"));
+      const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.Fog(0x0b0f16, 4.6, 12.8);
+
+      const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+      camera.position.set(0, 0.16, 2.62);
+
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: "high-performance" });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+
+      const ambient = new THREE.AmbientLight(0xffffff, 0.85);
+      scene.add(ambient);
+      const key = new THREE.DirectionalLight(0x9ad7ff, 0.9);
+      key.position.set(3, 2, 2);
+      scene.add(key);
+
+      const root = new THREE.Group();
+      scene.add(root);
+
+      let points = null;
+      let beam = null;
+      let pointCount = 0;
+      let outPositions = null;
+      let pointAttr = null;
+      let modelPositions = null;
+      let chaosPositions = null;
+      let colorAttr = null;
+      let baseColorAttr = null;
+      let noiseVec = null;
+      let noisePhase = null;
+      let clock = new THREE.Clock();
+      let lastColorMix = -1;
+
+      const state = {
+        morph: 0,
+        chaos: 1,
+        colorMix: 0,
+        opacity: 1,
+        pointSize: 0.018,
+        beamIntensity: 1,
+        finalClarity: 0,
+        visibleRatio: 0.42,
+      };
+
+      const startNeon = new THREE.Color(0x39f7ff);
+      const cTmp = new THREE.Color();
+      const vividTmp = new THREE.Color();
+      const hslTmp = { h: 0, s: 0, l: 0 };
+      let pointSprite = null;
+
+      function fitRenderer() {
+        const rect = canvas.getBoundingClientRect();
+        const width = Math.max(1, rect.width);
+        const height = Math.max(1, rect.height);
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      }
+
+      function activateCard(index) {
+        stepCards.forEach((card, i) => card.classList.toggle("active", i === index));
+      }
+
+      function maxPointsForDevice() {
+        const w = window.innerWidth;
+        const dpr = window.devicePixelRatio || 1;
+        if (w < 900) return 70000;
+        if (dpr > 1.75) return 90000;
+        return 100000;
+      }
+
+      function samplePositions(src, wantedCount) {
+        const srcCount = src.length / 3;
+        const count = Math.max(1, wantedCount);
+        const out = new Float32Array(count * 3);
+        if (count <= srcCount) {
+          const stride = srcCount / count;
+          for (let i = 0; i < count; i += 1) {
+            const idx = Math.floor(i * stride) * 3;
+            out[i * 3] = src[idx];
+            out[i * 3 + 1] = src[idx + 1];
+            out[i * 3 + 2] = src[idx + 2];
+          }
+        } else {
+          for (let i = 0; i < count; i += 1) {
+            const srcI = Math.floor(Math.random() * srcCount) * 3;
+            const j = 0.0025;
+            out[i * 3] = src[srcI] + (Math.random() - 0.5) * j;
+            out[i * 3 + 1] = src[srcI + 1] + (Math.random() - 0.5) * j;
+            out[i * 3 + 2] = src[srcI + 2] + (Math.random() - 0.5) * j;
+          }
+        }
+        return out;
+      }
+
+      function sampleColors(src, wantedCount) {
+        const srcCount = src.length / 3;
+        const count = Math.max(1, wantedCount);
+        const out = new Float32Array(count * 3);
+        if (count <= srcCount) {
+          const stride = srcCount / count;
+          for (let i = 0; i < count; i += 1) {
+            const idx = Math.floor(i * stride) * 3;
+            out[i * 3] = src[idx];
+            out[i * 3 + 1] = src[idx + 1];
+            out[i * 3 + 2] = src[idx + 2];
+          }
+        } else {
+          for (let i = 0; i < count; i += 1) {
+            const srcI = Math.floor(Math.random() * srcCount) * 3;
+            out[i * 3] = src[srcI];
+            out[i * 3 + 1] = src[srcI + 1];
+            out[i * 3 + 2] = src[srcI + 2];
+          }
+        }
+        return out;
+      }
+
+      function createChaosPositions(target) {
+        const out = new Float32Array(target.length);
+        let radius = 0;
+        for (let i = 0; i < target.length; i += 3) {
+          const r = Math.hypot(target[i], target[i + 1], target[i + 2]);
+          if (r > radius) radius = r;
+        }
+        const spread = Math.max(1, radius * 0.58);
+        for (let i = 0; i < target.length; i += 3) {
+          const u = Math.random();
+          const v = Math.random();
+          const w = Math.random();
+          const theta = 2 * Math.PI * u;
+          const phi = Math.acos(2 * v - 1);
+          const rr = spread * (0.12 + Math.cbrt(w) * 0.55);
+          out[i] = rr * Math.sin(phi) * Math.cos(theta);
+          out[i + 1] = rr * Math.cos(phi);
+          out[i + 2] = rr * Math.sin(phi) * Math.sin(theta);
+        }
+        return out;
+      }
+
+      function createNoise(count) {
+        const vectors = new Float32Array(count * 3);
+        const phases = new Float32Array(count);
+        for (let i = 0; i < count; i += 1) {
+          const k = i * 3;
+          let x = Math.random() * 2 - 1;
+          let y = Math.random() * 2 - 1;
+          let z = Math.random() * 2 - 1;
+          const len = Math.hypot(x, y, z) || 1;
+          vectors[k] = x / len;
+          vectors[k + 1] = y / len;
+          vectors[k + 2] = z / len;
+          phases[i] = Math.random() * Math.PI * 2;
+        }
+        return { vectors, phases };
+      }
+
+      function makeRoundPointSprite(size = 64) {
+        const spriteCanvas = document.createElement("canvas");
+        spriteCanvas.width = size;
+        spriteCanvas.height = size;
+        const ctx = spriteCanvas.getContext("2d");
+        if (!ctx) return null;
+        const center = size / 2;
+        const grad = ctx.createRadialGradient(center, center, 0, center, center, center);
+        grad.addColorStop(0, "rgba(255,255,255,1)");
+        grad.addColorStop(0.35, "rgba(255,255,255,0.95)");
+        grad.addColorStop(0.7, "rgba(255,255,255,0.35)");
+        grad.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, size, size);
+        const tex = new THREE.CanvasTexture(spriteCanvas);
+        tex.needsUpdate = true;
+        return tex;
+      }
+
+      function updateColorsIfNeeded(force = false) {
+        if (!colorAttr || !baseColorAttr) return;
+        if (!force && Math.abs(state.colorMix - lastColorMix) < 0.035) return;
+        lastColorMix = state.colorMix;
+        for (let i = 0; i < pointCount; i += 1) {
+          const r = baseColorAttr.getX(i);
+          const g = baseColorAttr.getY(i);
+          const b = baseColorAttr.getZ(i);
+          vividTmp.setRGB(r, g, b);
+          vividTmp.getHSL(hslTmp);
+          hslTmp.s = Math.max(0.78, hslTmp.s);
+          hslTmp.l = Math.max(0.58, hslTmp.l);
+          vividTmp.setHSL(hslTmp.h, hslTmp.s, hslTmp.l);
+          cTmp.copy(startNeon).lerp(vividTmp, state.colorMix);
+          colorAttr.setXYZ(i, cTmp.r, cTmp.g, cTmp.b);
+        }
+        colorAttr.needsUpdate = true;
+      }
+
+      function setupScroll() {
+        const section = document.getElementById("scrolly");
+        ScrollTrigger.create({
+          trigger: section,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.7,
+          onUpdate: (self) => {
+            const p = self.progress;
+            state.morph = THREE.MathUtils.smoothstep(p, 0.06, 0.98);
+            state.colorMix = THREE.MathUtils.smoothstep(p, 0.16, 0.4);
+            state.chaos = 1 - THREE.MathUtils.smoothstep(p, 0.05, 0.78);
+            state.beamIntensity = 1 - THREE.MathUtils.smoothstep(p, 0.18, 0.46);
+            state.finalClarity = THREE.MathUtils.smoothstep(p, 0.72, 1);
+            state.visibleRatio = 0.42 + THREE.MathUtils.smoothstep(p, 0.08, 0.96) * 0.58;
+            state.opacity = 1;
+            state.pointSize = 0.018 - THREE.MathUtils.smoothstep(p, 0.58, 1) * 0.0032;
+            activateCard(Math.min(3, Math.floor(p * 4)));
+          },
+        });
+      }
+
+      function buildPointScene(srcPos, srcColor) {
+        const maxPoints = maxPointsForDevice();
+        modelPositions = samplePositions(srcPos, maxPoints);
+        chaosPositions = createChaosPositions(modelPositions);
+        pointCount = modelPositions.length / 3;
+        outPositions = chaosPositions.slice(0);
+
+        const sampledColors = sampleColors(srcColor, pointCount);
+        const geometry = new THREE.BufferGeometry();
+        pointAttr = new THREE.BufferAttribute(outPositions, 3);
+        colorAttr = new THREE.BufferAttribute(sampledColors.slice(0), 3);
+        baseColorAttr = new THREE.BufferAttribute(sampledColors.slice(0), 3);
+        geometry.setAttribute("position", pointAttr);
+        geometry.setAttribute("color", colorAttr);
+        geometry.setAttribute("baseColor", baseColorAttr);
+        geometry.setDrawRange(0, Math.floor(pointCount * state.visibleRatio));
+        pointSprite = makeRoundPointSprite(64);
+
+        points = new THREE.Points(
+          geometry,
+          new THREE.PointsMaterial({
+            size: state.pointSize,
+            vertexColors: true,
+            transparent: true,
+            opacity: state.opacity,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending,
+            map: pointSprite,
+            alphaMap: pointSprite,
+            alphaTest: 0.02,
+          }),
+        );
+        root.add(points);
+
+        const noise = createNoise(pointCount);
+        noiseVec = noise.vectors;
+        noisePhase = noise.phases;
+
+        if (modelStatus) modelStatus.textContent = `Модель загружена • ${pointCount.toLocaleString()} точек`;
+        updateColorsIfNeeded(true);
+        activateCard(0);
+        setupScroll();
+      }
+
+      const loader = new PLYLoader();
+      loader.load(
+        "Model.ply",
+        (geometry) => {
+          geometry.computeBoundingBox();
+          geometry.center();
+          geometry.rotateX(-Math.PI / 2);
+          geometry.computeBoundingSphere();
+          const radius = geometry.boundingSphere?.radius || 1;
+          const scale = 1.62 / Math.max(0.001, radius);
+          geometry.scale(scale, scale, scale);
+
+          const pos = geometry.getAttribute("position").array;
+          const srcColorAttr = geometry.getAttribute("color");
+          let colors = null;
+          if (srcColorAttr) {
+            colors = srcColorAttr.array.slice(0);
+          } else {
+            colors = new Float32Array((pos.length / 3) * 3);
+            for (let i = 0; i < colors.length; i += 3) {
+              colors[i] = 0.2 + Math.random() * 0.8;
+              colors[i + 1] = 0.45 + Math.random() * 0.55;
+              colors[i + 2] = 0.55 + Math.random() * 0.45;
+            }
+          }
+          buildPointScene(pos, colors);
+        },
+        undefined,
+        (error) => {
+          if (modelStatus) modelStatus.textContent = "Ошибка PLY: fallback";
+          console.error("PLY load error:", error);
+          const fallback = new THREE.TorusKnotGeometry(0.85, 0.25, 360, 36);
+          const posAttr = fallback.getAttribute("position");
+          const pos = new Float32Array(posAttr.count * 3);
+          const colors = new Float32Array(posAttr.count * 3);
+          for (let i = 0; i < posAttr.count; i += 1) {
+            pos[i * 3] = posAttr.getX(i);
+            pos[i * 3 + 1] = posAttr.getY(i);
+            pos[i * 3 + 2] = posAttr.getZ(i);
+            colors[i * 3] = 0.6;
+            colors[i * 3 + 1] = 0.7;
+            colors[i * 3 + 2] = 0.85;
+          }
+          buildPointScene(pos, colors);
+        },
+      );
+
+      function animate() {
+        const t = clock.getElapsedTime();
+        root.rotation.y += prefersReduced ? 0.0006 : 0.0024;
+
+        if (points && pointAttr && modelPositions && chaosPositions) {
+          const m = state.morph;
+          const inv = 1 - m;
+          const chaosAmp = 0.08 * state.chaos;
+          for (let i = 0; i < pointCount; i += 1) {
+            const k = i * 3;
+            const wobble = chaosAmp * (0.5 + 0.5 * Math.sin(t * 3.2 + noisePhase[i]));
+            outPositions[k] = chaosPositions[k] * inv + modelPositions[k] * m + noiseVec[k] * wobble;
+            outPositions[k + 1] = chaosPositions[k + 1] * inv + modelPositions[k + 1] * m + noiseVec[k + 1] * wobble;
+            outPositions[k + 2] = chaosPositions[k + 2] * inv + modelPositions[k + 2] * m + noiseVec[k + 2] * wobble;
+          }
+          pointAttr.needsUpdate = true;
+          points.material.size = state.pointSize;
+          points.material.opacity = state.opacity;
+          points.material.blending = THREE.NormalBlending;
+          points.material.depthWrite = true;
+          points.geometry.setDrawRange(0, Math.floor(pointCount * state.visibleRatio));
+          updateColorsIfNeeded();
+        }
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener("resize", fitRenderer);
+      fitRenderer();
+      animate();
+    </script>
+  </body>
+</html>
