@@ -41,8 +41,13 @@
       }
 
       .step-card.active {
-        border-color: rgba(148, 163, 184, 0.9);
-        box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.35);
+        border-color: rgba(148, 163, 184, 0.75);
+        box-shadow: 0 10px 24px rgba(2, 6, 23, 0.28);
+      }
+
+      .step-card.dimmed {
+        opacity: 0.42;
+        filter: saturate(0.72) brightness(0.82);
       }
     </style>
   </head>
@@ -89,46 +94,50 @@
     <main>
       <section id="scrolly" class="relative border-y border-slate-800/80 bg-slate-950/45 py-16 md:py-24">
         <div class="mx-auto grid max-w-7xl gap-10 px-6 md:px-10 lg:grid-cols-[1fr_1fr] lg:px-12">
-          <div class="space-y-24 pb-12 lg:pr-8">
-            <article class="step-card rounded-xl border border-slate-700/60 bg-slate-900/40 p-7 transition" data-step="0">
+          <div class="space-y-10 pb-12 lg:pr-8">
+            <article class="step-card flex min-h-[58vh] flex-col justify-between rounded-2xl border border-slate-700/55 bg-slate-900/34 p-8 transition md:p-9" data-step="0">
               <p class="text-xs uppercase tracking-[0.24em] text-slate-400">01. Лазерное сканирование</p>
               <h2 class="mt-3 text-2xl font-semibold">Сбор облака точек</h2>
               <p class="mt-4 text-slate-300">
                 Полевая съёмка фиксирует геометрию объекта без потерь. Сканер формирует плотное серое облако
                 точек как первичный цифровой след.
               </p>
+              <div class="mt-8 h-px w-full bg-slate-700/70"></div>
             </article>
 
-            <article class="step-card rounded-xl border border-slate-700/60 bg-slate-900/40 p-7 transition" data-step="1">
+            <article class="step-card flex min-h-[58vh] flex-col justify-between rounded-2xl border border-slate-700/55 bg-slate-900/34 p-8 transition md:p-9" data-step="1">
               <p class="text-xs uppercase tracking-[0.24em] text-slate-400">02. Обработка данных</p>
               <h2 class="mt-3 text-2xl font-semibold">Классификация и RGB-коррекция</h2>
               <p class="mt-4 text-slate-300">
                 Регистрируем станции, очищаем шум, объединяем фрагменты. Точки получают реальные RGB-значения
                 для точной интерпретации текущего состояния объекта.
               </p>
+              <div class="mt-8 h-px w-full bg-slate-700/70"></div>
             </article>
 
-            <article class="step-card rounded-xl border border-slate-700/60 bg-slate-900/40 p-7 transition" data-step="2">
+            <article class="step-card flex min-h-[58vh] flex-col justify-between rounded-2xl border border-slate-700/55 bg-slate-900/34 p-8 transition md:p-9" data-step="2">
               <p class="text-xs uppercase tracking-[0.24em] text-slate-400">03. Scan-to-BIM</p>
               <h2 class="mt-3 text-2xl font-semibold">Реверс-инжиниринг в BIM</h2>
               <p class="mt-4 text-slate-300">
                 По облаку точек формируем конструктивную и инженерную модель. Каркасная сетка визуализирует
                 переход от данных съёмки к управляемой цифровой копии.
               </p>
+              <div class="mt-8 h-px w-full bg-slate-700/70"></div>
             </article>
 
-            <article class="step-card rounded-xl border border-slate-700/60 bg-slate-900/40 p-7 transition" data-step="3">
+            <article class="step-card flex min-h-[58vh] flex-col justify-between rounded-2xl border border-slate-700/55 bg-slate-900/34 p-8 transition md:p-9" data-step="3">
               <p class="text-xs uppercase tracking-[0.24em] text-slate-400">04. Контроль коллизий</p>
               <h2 class="mt-3 text-2xl font-semibold">Проверка пересечений</h2>
               <p class="mt-4 text-slate-300">
                 Прозрачная сцена показывает внутренние сети и потенциальные коллизии. Получаете основу для
                 координации подрядчиков и снижения рисков на стройке.
               </p>
+              <div class="mt-8 h-px w-full bg-slate-700/70"></div>
             </article>
           </div>
 
           <div class="lg:relative overflow-visible">
-            <div class="top-8 h-[82vh] lg:sticky">
+            <div class="top-0 h-[100vh] lg:sticky">
               <div class="relative -mx-10 h-[112%] w-[calc(100%+5rem)] -translate-y-[6%] bg-transparent md:-mx-12 md:w-[calc(100%+6rem)] lg:-mx-16 lg:w-[calc(100%+8rem)]">
                 <canvas id="sceneCanvas" class="h-full w-full"></canvas>
                 <div class="pointer-events-none absolute left-4 top-4 rounded bg-slate-900/80 px-3 py-2 text-[11px] tracking-[0.2em] text-slate-200">
@@ -289,7 +298,11 @@
       }
 
       function activateCard(index) {
-        stepCards.forEach((card, i) => card.classList.toggle("active", i === index));
+        stepCards.forEach((card, i) => {
+          const isActive = i === index;
+          card.classList.toggle("active", isActive);
+          card.classList.toggle("dimmed", !isActive);
+        });
       }
 
       function maxPointsForDevice() {
@@ -354,16 +367,16 @@
           const r = Math.hypot(target[i], target[i + 1], target[i + 2]);
           if (r > radius) radius = r;
         }
-        const spread = Math.max(1, radius * 0.58);
+        const spread = Math.max(1, radius * 0.44);
         for (let i = 0; i < target.length; i += 3) {
           const u = Math.random();
           const v = Math.random();
           const w = Math.random();
           const theta = 2 * Math.PI * u;
           const phi = Math.acos(2 * v - 1);
-          const rr = spread * (0.12 + Math.cbrt(w) * 0.55);
-          out[i] = rr * Math.sin(phi) * Math.cos(theta);
-          out[i + 1] = rr * Math.cos(phi);
+          const rr = spread * (0.1 + Math.cbrt(w) * 0.45);
+          out[i] = rr * Math.sin(phi) * Math.cos(theta) * 0.86;
+          out[i + 1] = rr * Math.cos(phi) * 0.78;
           out[i + 2] = rr * Math.sin(phi) * Math.sin(theta);
         }
         return out;
@@ -444,6 +457,26 @@
             activateCard(Math.min(3, Math.floor(p * 4)));
           },
         });
+
+        stepCards.forEach((card) => {
+          gsap.fromTo(
+            card,
+            { y: 42, opacity: 0.04, filter: "blur(8px)" },
+            {
+              y: 0,
+              opacity: 1,
+              filter: "blur(0px)",
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: card,
+                start: "top 88%",
+                end: "top 52%",
+                scrub: 0.8,
+                toggleActions: "play reverse play reverse",
+              },
+            },
+          );
+        });
       }
 
       function buildPointScene(srcPos, srcColor) {
@@ -499,7 +532,7 @@
           geometry.rotateX(-Math.PI / 2);
           geometry.computeBoundingSphere();
           const radius = geometry.boundingSphere?.radius || 1;
-          const scale = 1.62 / Math.max(0.001, radius);
+          const scale = 0.76 / Math.max(0.001, radius);
           geometry.scale(scale, scale, scale);
 
           const pos = geometry.getAttribute("position").array;
