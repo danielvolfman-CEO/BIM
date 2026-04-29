@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test — BIM-экспертиза 2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        background: #0b0f16;
+      }
+      .grid-overlay {
+        background-image:
+          linear-gradient(rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+        background-size: 40px 40px;
+      }
+      .toc-link.active {
+        border-color: rgba(148, 163, 184, 0.9);
+        color: #f1f5f9;
+        background: rgba(30, 41, 59, 0.6);
+      }
+      .info-card {
+        border: 1px solid rgba(100, 116, 139, 0.45);
+        background: rgba(15, 23, 42, 0.42);
+      }
+      .article-section {
+        transition: transform 300ms ease, opacity 300ms ease;
+      }
+      .article-section.reveal {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      .article-section.reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+  </head>
+  <body class="text-slate-100 antialiased">
+    <div class="fixed inset-0 -z-10 grid-overlay opacity-25"></div>
+
+    <header class="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-10 lg:px-12">
+        <a href="./index.html" class="text-xs tracking-[0.3em] text-slate-300">DIGITAL SURVEY LAB</a>
+        <a href="./index.html" class="rounded-md border border-slate-600/70 px-4 py-2 text-xs uppercase tracking-[0.15em] text-slate-200">
+          На главную
+        </a>
+      </div>
+    </header>
+
+    <main class="mx-auto grid max-w-7xl gap-10 px-6 py-10 md:px-10 lg:grid-cols-[320px_1fr] lg:gap-14 lg:px-12 lg:py-14">
+      <aside class="lg:sticky lg:top-6 lg:self-start">
+        <div class="rounded-2xl border border-slate-700/70 bg-slate-900/45 p-5">
+          <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Оглавление</p>
+          <nav id="toc" class="mt-4 space-y-2 text-sm">
+            <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#s1">BIM-экспертиза в 2025</a>
+            <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#s2">Форматы и требования IFC</a>
+            <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#s3">LOD для экспертизы</a>
+            <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#s4">Подготовка модели</a>
+            <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#s5">5D-смета и связка с BIM</a>
+            <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#s6">Типовые ошибки</a>
+            <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#s7">Практика 2025</a>
+            <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#s8">Кейс и выводы</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="space-y-8">
+        <section class="article-section rounded-2xl border border-slate-700/70 bg-slate-900/35 p-8">
+          <p class="text-xs uppercase tracking-[0.22em] text-slate-400">Новости и статьи</p>
+          <h1 class="mt-3 text-3xl font-semibold leading-tight md:text-5xl">
+            BIM и экспертиза в 2025: как сдавать цифровую модель, форматы, LOD, 5D-смета
+          </h1>
+          <p class="mt-5 max-w-3xl text-slate-300">
+            Страница построена по структуре экспертной статьи: оглавление, крупные смысловые блоки и сквозная
+            навигация по разделам. Стилизация адаптирована под текущий строгий digital-визуал.
+          </p>
+          <img
+            class="mt-6 h-64 w-full rounded-xl border border-slate-700/70 object-cover"
+            src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1600&q=80"
+            alt="Инженер анализирует цифровую модель на экране"
+            loading="lazy"
+          />
+        </section>
+
+        <section id="s1" class="article-section rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
+          <h2 class="text-2xl font-semibold">BIM-экспертиза: новая реальность 2025</h2>
+          <p class="mt-4 text-slate-300">BIM становится стандартом: цифровая модель проверяется вместе с чертежами и автоматически анализируется по правилам.</p>
+          <ul class="mt-4 space-y-2 text-slate-300">
+            <li>• Классическая проверка: PDF и текстовые документы.</li>
+            <li>• BIM-проверка: 3D-модель, атрибуты элементов, коллизии и связи.</li>
+            <li>• Для крупных и федеральных объектов BIM — базовый формат взаимодействия.</li>
+          </ul>
+          <div class="info-card mt-6 rounded-xl p-4">
+            <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Ключевой тезис</p>
+            <p class="mt-2 text-sm text-slate-200">Экспертиза в 2025 оценивает не только документацию, но и цифровую зрелость модели.</p>
+          </div>
+        </section>
+
+        <section id="s2" class="article-section rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
+          <h2 class="text-2xl font-semibold">Форматы и требования IFC</h2>
+          <p class="mt-4 text-slate-300">Основной рабочий формат экспертизы — IFC4. Нативные RVT/PLN допустимы как дополнение для детальной сверки.</p>
+          <div class="mt-5 grid gap-3 md:grid-cols-3">
+            <div class="rounded-lg border border-slate-700/70 p-4"><p class="text-sm text-slate-300"><strong>IFC4:</strong> обязательный, нейтральный, обменный.</p></div>
+            <div class="rounded-lg border border-slate-700/70 p-4"><p class="text-sm text-slate-300"><strong>RVT/PLN:</strong> желательны для углубленной проверки.</p></div>
+            <div class="rounded-lg border border-slate-700/70 p-4"><p class="text-sm text-slate-300"><strong>PDF:</strong> комплект листов и спецификаций из модели.</p></div>
+          </div>
+          <img
+            class="mt-6 h-56 w-full rounded-xl border border-slate-700/70 object-cover"
+            src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=1600&q=80"
+            alt="Команда работает с технической документацией и BIM-форматами"
+            loading="lazy"
+          />
+        </section>
+
+        <section id="s3" class="article-section rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
+          <h2 class="text-2xl font-semibold">LOD для экспертизы</h2>
+          <p class="mt-4 text-slate-300">Минимум для проектной документации — LOD 300: точная геометрия и валидные параметры для всех ключевых элементов.</p>
+          <p class="mt-3 text-slate-300">LOD 200 обычно недостаточен, а LOD 400 часто избыточен для стадии ПД.</p>
+          <div class="mt-6 grid gap-3 md:grid-cols-3">
+            <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300"><strong>LOD 200</strong><br />Недостаточно для экспертизы.</p></div>
+            <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300"><strong>LOD 300</strong><br />Базовый рабочий уровень.</p></div>
+            <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300"><strong>LOD 400</strong><br />Обычно избыточен на ПД.</p></div>
+          </div>
+        </section>
+
+        <section id="s4" class="article-section rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
+          <h2 class="text-2xl font-semibold">Как подготовить модель к сдаче</h2>
+          <ol class="mt-4 space-y-3 text-slate-300">
+            <li>1. Проверка коллизий и дубликатов (Navisworks/Solibri).</li>
+            <li>2. Заполнение атрибутов элементов (материалы, марки, параметры систем).</li>
+            <li>3. Экспорт IFC4 и верификация файла во внешнем viewer.</li>
+            <li>4. Формирование комплекта: модель, PDF-листы, ведомости, смета.</li>
+          </ol>
+        </section>
+
+        <section id="s5" class="article-section rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
+          <h2 class="text-2xl font-semibold">5D-смета и связка с моделью</h2>
+          <p class="mt-4 text-slate-300">5D-смета должна быть напрямую связана с элементами модели: количества подтягиваются автоматически, ручной ввод минимизируется.</p>
+          <p class="mt-3 text-slate-300">Тест контроля: изменение параметра элемента в BIM должно автоматически менять количество в сметной позиции.</p>
+          <img
+            class="mt-6 h-56 w-full rounded-xl border border-slate-700/70 object-cover"
+            src="https://images.unsplash.com/photo-1551281044-8b0a3d7b9f5f?auto=format&fit=crop&w=1600&q=80"
+            alt="Аналитика стоимости и 5D-смета на цифровой панели"
+            loading="lazy"
+          />
+        </section>
+
+        <section id="s6" class="article-section rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
+          <h2 class="text-2xl font-semibold">Типовые ошибки</h2>
+          <ul class="mt-4 space-y-2 text-slate-300">
+            <li>• некорректная классификация элементов;</li>
+            <li>• элементы без материалов и атрибутов;</li>
+            <li>• дубли и пересечения разделов;</li>
+            <li>• разъезд модели и выгруженных чертежей;</li>
+            <li>• неправильная геопривязка.</li>
+          </ul>
+        </section>
+
+        <section id="s7" class="article-section rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
+          <h2 class="text-2xl font-semibold">Что реально принимают в 2025</h2>
+          <p class="mt-4 text-slate-300">Минимальный рабочий комплект: IFC4 + PDF из модели + спецификации. Это базовая конфигурация для стабильного прохождения проверки.</p>
+          <div class="info-card mt-6 rounded-xl p-4">
+            <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Минимум на сдачу</p>
+            <p class="mt-2 text-sm text-slate-200">IFC4 + комплект листов из модели + спецификации + проверка коллизий перед отправкой.</p>
+          </div>
+        </section>
+
+        <section id="s8" class="article-section rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
+          <h2 class="text-2xl font-semibold">Кейс и выводы</h2>
+          <p class="mt-4 text-slate-300">При корректной предвалидации BIM-модели количество замечаний и сроки устранения снижаются. Экспертиза проходит быстрее за счёт автоматических проверок и синхронной документации.</p>
+          <a href="./index.html#cta" class="mt-6 inline-flex rounded-md border border-slate-500/70 bg-slate-800/40 px-5 py-3 text-xs uppercase tracking-[0.18em] text-slate-100">
+            Перейти к заявке
+          </a>
+        </section>
+      </article>
+    </main>
+
+    <script>
+      const links = Array.from(document.querySelectorAll(".toc-link"));
+      const sections = links
+        .map((link) => document.querySelector(link.getAttribute("href")))
+        .filter(Boolean);
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const id = `#${entry.target.id}`;
+            links.forEach((link) => link.classList.toggle("active", link.getAttribute("href") === id));
+          });
+        },
+        { rootMargin: "-45% 0px -45% 0px", threshold: 0.01 },
+      );
+
+      sections.forEach((section) => {
+        section.classList.add("reveal");
+        observer.observe(section);
+      });
+      if (links[0]) links[0].classList.add("active");
+
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) entry.target.classList.add("is-visible");
+          });
+        },
+        { rootMargin: "0px 0px -10% 0px", threshold: 0.14 },
+      );
+
+      document.querySelectorAll(".article-section").forEach((el) => revealObserver.observe(el));
+    </script>
+  </body>
+</html>

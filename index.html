@@ -41,14 +41,84 @@
       }
 
       .step-card.active {
-        border-color: rgba(148, 163, 184, 0.75);
-        box-shadow: 0 10px 24px rgba(2, 6, 23, 0.28);
+        opacity: 1;
       }
 
       .step-card.dimmed {
-        opacity: 0.42;
-        filter: saturate(0.72) brightness(0.82);
+        opacity: 0.16;
+        filter: saturate(0.65) brightness(0.75);
       }
+
+      .toc-link.active {
+        border-color: rgba(148, 163, 184, 0.9);
+        color: #f1f5f9;
+        background: rgba(30, 41, 59, 0.6);
+      }
+
+      .info-card {
+        border: 1px solid rgba(100, 116, 139, 0.45);
+        background: rgba(15, 23, 42, 0.42);
+      }
+
+      .tech-panel {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .tech-panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+          linear-gradient(rgba(34, 211, 238, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(34, 211, 238, 0.08) 1px, transparent 1px);
+        background-size: 24px 24px;
+        opacity: 0.55;
+      }
+
+      .tech-panel::after {
+        content: "";
+        position: absolute;
+        inset: -30% -20% auto auto;
+        width: 200px;
+        height: 200px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(34, 211, 238, 0.2), transparent 65%);
+        filter: blur(8px);
+        pointer-events: none;
+      }
+
+      .tech-line {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.75), transparent);
+      }
+
+      .step-kicker {
+        font-size: 0.78rem;
+        letter-spacing: 0.24em;
+      }
+
+      .step-title {
+        font-size: clamp(2rem, 3.4vw, 3.2rem);
+        line-height: 1.08;
+        letter-spacing: -0.01em;
+        text-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.08),
+          0 12px 24px rgba(2, 6, 23, 0.38);
+      }
+
+      .step-body {
+        font-size: clamp(1.02rem, 1.35vw, 1.22rem);
+        line-height: 1.55;
+        text-shadow: 0 8px 16px rgba(2, 6, 23, 0.3);
+      }
+
+      .step-copy {
+        transform: perspective(900px) rotateX(2.4deg) translateZ(0);
+        transform-origin: 50% 70%;
+      }
+
     </style>
   </head>
   <body class="text-slate-100 antialiased">
@@ -79,6 +149,12 @@
             Обсудить проект
             <span aria-hidden="true">→</span>
           </a>
+          <a
+            href="./test.html"
+            class="ml-3 mt-9 inline-flex items-center gap-3 rounded-md border border-slate-700/70 bg-transparent px-7 py-4 text-sm font-medium uppercase tracking-[0.2em] text-slate-300 transition hover:bg-slate-800/35"
+          >
+            Test-страница
+          </a>
         </div>
         <div class="rounded-2xl border border-slate-700/70 bg-slate-900/45 p-6 backdrop-blur">
           <p class="text-xs uppercase tracking-[0.28em] text-slate-300">Точность и цифровизация</p>
@@ -94,45 +170,37 @@
     <main>
       <section id="scrolly" class="relative border-y border-slate-800/80 bg-slate-950/45 py-16 md:py-24">
         <div class="mx-auto grid max-w-7xl gap-10 px-6 md:px-10 lg:grid-cols-[1fr_1fr] lg:px-12">
-          <div class="space-y-10 pb-12 lg:pr-8">
-            <article class="step-card flex min-h-[58vh] flex-col justify-between rounded-2xl border border-slate-700/55 bg-slate-900/34 p-8 transition md:p-9" data-step="0">
-              <p class="text-xs uppercase tracking-[0.24em] text-slate-400">01. Лазерное сканирование</p>
-              <h2 class="mt-3 text-2xl font-semibold">Сбор облака точек</h2>
-              <p class="mt-4 text-slate-300">
-                Полевая съёмка фиксирует геометрию объекта без потерь. Сканер формирует плотное серое облако
-                точек как первичный цифровой след.
-              </p>
-              <div class="mt-8 h-px w-full bg-slate-700/70"></div>
+          <div class="space-y-20 pb-12 lg:pr-8">
+            <article class="step-card flex min-h-[44vh] flex-col justify-center p-2 transition md:p-4" data-step="0">
+              <p class="step-kicker text-xs uppercase tracking-[0.24em] text-slate-400">01. Позиционирование на рынке</p>
+              <div class="step-copy">
+                <h2 class="step-title mt-4 font-semibold">Точность до 2 мм</h2>
+                <p class="step-body mt-3 max-w-xl text-slate-300">Лазерное сканирование и инженерная геодезия.</p>
+              </div>
             </article>
 
-            <article class="step-card flex min-h-[58vh] flex-col justify-between rounded-2xl border border-slate-700/55 bg-slate-900/34 p-8 transition md:p-9" data-step="1">
-              <p class="text-xs uppercase tracking-[0.24em] text-slate-400">02. Обработка данных</p>
-              <h2 class="mt-3 text-2xl font-semibold">Классификация и RGB-коррекция</h2>
-              <p class="mt-4 text-slate-300">
-                Регистрируем станции, очищаем шум, объединяем фрагменты. Точки получают реальные RGB-значения
-                для точной интерпретации текущего состояния объекта.
-              </p>
-              <div class="mt-8 h-px w-full bg-slate-700/70"></div>
+            <article class="step-card flex min-h-[44vh] flex-col justify-center p-2 transition md:p-4" data-step="1">
+              <p class="step-kicker text-xs uppercase tracking-[0.24em] text-slate-400">02. Производственная экспертиза</p>
+              <div class="step-copy">
+                <h2 class="step-title mt-4 font-semibold">LOD 300/400 без потерь</h2>
+                <p class="step-body mt-3 max-w-xl text-slate-300">Полный цикл: облако точек → BIM → РД.</p>
+              </div>
             </article>
 
-            <article class="step-card flex min-h-[58vh] flex-col justify-between rounded-2xl border border-slate-700/55 bg-slate-900/34 p-8 transition md:p-9" data-step="2">
-              <p class="text-xs uppercase tracking-[0.24em] text-slate-400">03. Scan-to-BIM</p>
-              <h2 class="mt-3 text-2xl font-semibold">Реверс-инжиниринг в BIM</h2>
-              <p class="mt-4 text-slate-300">
-                По облаку точек формируем конструктивную и инженерную модель. Каркасная сетка визуализирует
-                переход от данных съёмки к управляемой цифровой копии.
-              </p>
-              <div class="mt-8 h-px w-full bg-slate-700/70"></div>
+            <article class="step-card flex min-h-[44vh] flex-col justify-center p-2 transition md:p-4" data-step="2">
+              <p class="step-kicker text-xs uppercase tracking-[0.24em] text-slate-400">03. Достижения команды</p>
+              <div class="step-copy">
+                <h2 class="step-title mt-4 font-semibold">120+ объектов</h2>
+                <p class="step-body mt-3 max-w-xl text-slate-300">Промышленные, гражданские и инфраструктурные проекты.</p>
+              </div>
             </article>
 
-            <article class="step-card flex min-h-[58vh] flex-col justify-between rounded-2xl border border-slate-700/55 bg-slate-900/34 p-8 transition md:p-9" data-step="3">
-              <p class="text-xs uppercase tracking-[0.24em] text-slate-400">04. Контроль коллизий</p>
-              <h2 class="mt-3 text-2xl font-semibold">Проверка пересечений</h2>
-              <p class="mt-4 text-slate-300">
-                Прозрачная сцена показывает внутренние сети и потенциальные коллизии. Получаете основу для
-                координации подрядчиков и снижения рисков на стройке.
-              </p>
-              <div class="mt-8 h-px w-full bg-slate-700/70"></div>
+            <article class="step-card flex min-h-[44vh] flex-col justify-center p-2 transition md:p-4" data-step="3">
+              <p class="step-kicker text-xs uppercase tracking-[0.24em] text-slate-400">04. Широкий профиль</p>
+              <div class="step-copy">
+                <h2 class="step-title mt-4 font-semibold">BIM + геодезия + стройконтроль</h2>
+                <p class="step-body mt-3 max-w-xl text-slate-300">Единый подрядчик на весь цикл объекта.</p>
+              </div>
             </article>
           </div>
 
@@ -150,6 +218,104 @@
             </div>
           </div>
         </div>
+      </section>
+
+      <section id="insights" class="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:px-10 lg:grid-cols-[320px_1fr] lg:gap-14 lg:px-12 lg:py-20">
+        <aside class="lg:sticky lg:top-6 lg:self-start">
+          <div class="rounded-2xl border border-slate-700/70 bg-slate-900/45 p-5">
+            <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Экспертный профиль</p>
+            <nav class="mt-4 space-y-2 text-sm">
+              <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#insight-s1">BIM-экспертиза 2025</a>
+              <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#insight-s2">Форматы и IFC4</a>
+              <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#insight-s3">LOD и требования</a>
+              <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#insight-s4">Подготовка к сдаче</a>
+              <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#insight-s5">Артефакты BIM-комплекта</a>
+              <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#insight-s6">5D-смета и контроль</a>
+              <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#insight-s7">Типовые ошибки</a>
+              <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#insight-s8">Итоговая экспертиза</a>
+            </nav>
+          </div>
+        </aside>
+
+        <article class="space-y-8">
+          <section id="insight-s1" class="rounded-2xl border border-slate-700/70 bg-slate-900/35 p-8">
+            <p class="text-xs uppercase tracking-[0.22em] text-slate-400">Экспертная компетенция компании</p>
+            <h3 class="mt-3 text-3xl font-semibold leading-tight md:text-4xl">BIM-экспертиза в 2025: практический стандарт нашей команды</h3>
+            <p class="mt-4 text-slate-300">Мы ведём проекты в логике цифровой экспертизы: проверяем не только листы, а целостность ЦИМ — геометрию, атрибуты, иерархию, коллизии и связность решений между дисциплинами.</p>
+            <p class="mt-3 text-slate-300">Такой подход сокращает цикл согласований, снижает количество замечаний и повышает предсказуемость сроков на этапе строительства.</p>
+          </section>
+
+          <section id="insight-s2" class="tech-panel rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
+            <h3 class="text-2xl font-semibold">Форматы и IFC4: как мы обеспечиваем совместимость</h3>
+            <p class="mt-4 text-slate-300">Основной формат выдачи — IFC4. Параллельно сохраняем нативные модели (RVT/PLN) для глубокой технической проверки и быстрого уточнения спорных мест.</p>
+            <div class="tech-line mt-5 w-full"></div>
+            <div class="mt-5 grid gap-3 md:grid-cols-3">
+              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300"><strong>IFC4:</strong> обязательный обменный формат для экспертизы.</p></div>
+              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300"><strong>RVT/PLN:</strong> исходник для детального инженерного контроля.</p></div>
+              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300"><strong>PDF/Excel:</strong> листы, спецификации, ведомости из модели.</p></div>
+            </div>
+          </section>
+
+          <section id="insight-s3" class="rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
+            <h3 class="text-2xl font-semibold">LOD и глубина проработки: где мы держим инженерный баланс</h3>
+            <p class="mt-4 text-slate-300">Для проектной стадии мы ведём модель на уровне LOD 300, а по узловым зонам поднимаем до LOD 350/400, когда это действительно влияет на координацию и стоимость.</p>
+            <ul class="mt-4 space-y-2 text-slate-300">
+              <li>• LOD 200 — недостаточно для надёжной проверки;</li>
+              <li>• LOD 300 — рабочий минимум для экспертизы ПД;</li>
+              <li>• LOD 400 — целевой уровень для сложных производственных узлов.</li>
+            </ul>
+          </section>
+
+          <section id="insight-s4" class="rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
+            <h3 class="text-2xl font-semibold">Подготовка модели перед подачей: наш регламент качества</h3>
+            <ol class="mt-4 space-y-2 text-slate-300">
+              <li>1. Clash-detection по дисциплинам (АР, КР, ОВ, ВК, ЭОМ).</li>
+              <li>2. Валидация атрибутов: материалы, марки, параметры систем.</li>
+              <li>3. Контроль IFC-экспорта и повторная проверка в независимом viewer.</li>
+              <li>4. Синхронная выгрузка листов, спецификаций и ведомостей из актуальной модели.</li>
+            </ol>
+          </section>
+
+          <section id="insight-s5" class="tech-panel rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
+            <h3 class="text-2xl font-semibold">Артефакты BIM-комплекта: что получает заказчик и экспертиза</h3>
+            <div class="mt-4 grid gap-3 md:grid-cols-2">
+              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300">IFC4-модель с валидной структурой и атрибутами.</p></div>
+              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300">Планы, разрезы, фасады и схемы из актуальной ЦИМ.</p></div>
+              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300">Спецификации и ведомости объёмов из модели.</p></div>
+              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300">Сметные выгрузки и отчёты коллизий для защиты решений.</p></div>
+            </div>
+            <div class="tech-line mt-6 w-full"></div>
+          </section>
+
+          <section id="insight-s6" class="rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
+            <h3 class="text-2xl font-semibold">5D-смета и контроль бюджета</h3>
+            <p class="mt-4 text-slate-300">Мы связываем сметные позиции с элементами модели, чтобы количество работ обновлялось автоматически при изменениях в проекте.</p>
+            <p class="mt-3 text-slate-300">Это снижает риски расхождений между проектом, сметой и фактическим выполнением на стройке.</p>
+          </section>
+
+          <section id="insight-s7" class="rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
+            <h3 class="text-2xl font-semibold">Типовые ошибки, которые мы снимаем до экспертизы</h3>
+            <ul class="mt-4 space-y-2 text-slate-300">
+              <li>• конфликт инженерных систем с конструкциями;</li>
+              <li>• дубли и разрывы элементов;</li>
+              <li>• неполные или формальные атрибуты;</li>
+              <li>• расхождения между моделью и листами.</li>
+            </ul>
+          </section>
+
+          <section id="insight-s8" class="tech-panel rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
+            <h3 class="text-2xl font-semibold">Итоговая экспертиза: чем сильна наша команда</h3>
+            <p class="mt-4 text-slate-300">Мы объединяем BIM-моделирование, геодезию, стройконтроль и инженерную экспертизу в одном контуре, чтобы проект проходил путь от данных к реализации без потери качества.</p>
+            <div class="mt-6 grid gap-3 md:grid-cols-3">
+              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300">Цифровая координация разделов</p></div>
+              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300">Геодезический контроль на площадке</p></div>
+              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300">Прозрачная 5D-экономика проекта</p></div>
+            </div>
+            <a href="#cta" class="mt-6 inline-flex rounded-md border border-slate-500/70 bg-slate-800/40 px-5 py-3 text-xs uppercase tracking-[0.18em] text-slate-100">
+              Обсудить задачу
+            </a>
+          </section>
+        </article>
       </section>
 
       <section class="mx-auto max-w-7xl px-6 py-16 md:px-10 md:py-24 lg:px-12">
@@ -280,6 +446,7 @@
         beamIntensity: 1,
         finalClarity: 0,
         visibleRatio: 0.42,
+        yLift: 0.42,
       };
 
       const startNeon = new THREE.Color(0xffffff);
@@ -356,6 +523,30 @@
             out[i * 3 + 1] = src[srcI + 1];
             out[i * 3 + 2] = src[srcI + 2];
           }
+        }
+        return out;
+      }
+
+      function makeShuffledIndices(count) {
+        const indices = new Uint32Array(count);
+        for (let i = 0; i < count; i += 1) indices[i] = i;
+        for (let i = count - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const tmp = indices[i];
+          indices[i] = indices[j];
+          indices[j] = tmp;
+        }
+        return indices;
+      }
+
+      function remapTriplets(src, indices) {
+        const out = new Float32Array(src.length);
+        for (let i = 0; i < indices.length; i += 1) {
+          const from = indices[i] * 3;
+          const to = i * 3;
+          out[to] = src[from];
+          out[to + 1] = src[from + 1];
+          out[to + 2] = src[from + 2];
         }
         return out;
       }
@@ -446,51 +637,59 @@
           scrub: 0.7,
           onUpdate: (self) => {
             const p = self.progress;
-            state.morph = THREE.MathUtils.smoothstep(p, 0.06, 0.98);
-            state.colorMix = THREE.MathUtils.smoothstep(p, 0.16, 0.4);
-            state.chaos = 1 - THREE.MathUtils.smoothstep(p, 0.05, 0.78);
+            state.morph = THREE.MathUtils.smoothstep(p, 0.0, 0.9);
+            state.colorMix = THREE.MathUtils.smoothstep(p, 0.08, 0.32);
+            state.chaos = 1 - THREE.MathUtils.smoothstep(p, 0.01, 0.68);
             state.beamIntensity = 1 - THREE.MathUtils.smoothstep(p, 0.18, 0.46);
             state.finalClarity = THREE.MathUtils.smoothstep(p, 0.72, 1);
-            state.visibleRatio = 0.42 + THREE.MathUtils.smoothstep(p, 0.08, 0.96) * 0.58;
+            state.visibleRatio = 0.42 + THREE.MathUtils.smoothstep(p, 0.0, 0.84) * 0.58;
             state.opacity = 1;
             state.pointSize = 0.018 - THREE.MathUtils.smoothstep(p, 0.58, 1) * 0.0032;
+            state.yLift = 0.42 * (1 - THREE.MathUtils.smoothstep(p, 0.02, 0.58));
             activateCard(Math.min(3, Math.floor(p * 4)));
           },
         });
 
         stepCards.forEach((card) => {
-          gsap.fromTo(
-            card,
-            { y: 42, opacity: 0.04, filter: "blur(8px)" },
-            {
-              y: 0,
-              opacity: 1,
-              filter: "blur(0px)",
-              ease: "power3.out",
-              scrollTrigger: {
-                trigger: card,
-                start: "top 88%",
-                end: "top 52%",
-                scrub: 0.8,
-                toggleActions: "play reverse play reverse",
-              },
+          ScrollTrigger.create({
+            trigger: card,
+            start: "top 94%",
+            end: "bottom 10%",
+            scrub: 0.75,
+            onUpdate: (self) => {
+              const p = self.progress;
+              const enterPhase = Math.min(1, p / 0.35);
+              const exitPhase = Math.max(0, (p - 0.65) / 0.35);
+
+              const y = gsap.utils.interpolate(56, 0, enterPhase);
+              const enterOpacity = gsap.utils.interpolate(0, 1, enterPhase);
+              const exitOpacity = gsap.utils.interpolate(1, 0.08, exitPhase);
+              const opacity = p < 0.65 ? enterOpacity : exitOpacity;
+              const blur = p < 0.35 ? gsap.utils.interpolate(12, 0, enterPhase) : gsap.utils.interpolate(0, 4, exitPhase);
+
+              card.style.transform = `translate3d(0, ${y}px, 0)`;
+              card.style.opacity = String(opacity);
+              card.style.filter = `blur(${blur}px)`;
             },
-          );
+          });
         });
       }
 
       function buildPointScene(srcPos, srcColor) {
         const maxPoints = maxPointsForDevice();
-        modelPositions = samplePositions(srcPos, maxPoints);
+        const sampledPos = samplePositions(srcPos, maxPoints);
+        pointCount = sampledPos.length / 3;
+        const sampledColors = sampleColors(srcColor, pointCount);
+        const shuffled = makeShuffledIndices(pointCount);
+        modelPositions = remapTriplets(sampledPos, shuffled);
+        const remappedColors = remapTriplets(sampledColors, shuffled);
         chaosPositions = createChaosPositions(modelPositions);
-        pointCount = modelPositions.length / 3;
         outPositions = chaosPositions.slice(0);
 
-        const sampledColors = sampleColors(srcColor, pointCount);
         const geometry = new THREE.BufferGeometry();
         pointAttr = new THREE.BufferAttribute(outPositions, 3);
-        colorAttr = new THREE.BufferAttribute(sampledColors.slice(0), 3);
-        baseColorAttr = new THREE.BufferAttribute(sampledColors.slice(0), 3);
+        colorAttr = new THREE.BufferAttribute(remappedColors.slice(0), 3);
+        baseColorAttr = new THREE.BufferAttribute(remappedColors.slice(0), 3);
         geometry.setAttribute("position", pointAttr);
         geometry.setAttribute("color", colorAttr);
         geometry.setAttribute("baseColor", baseColorAttr);
@@ -573,6 +772,7 @@
       function animate() {
         const t = clock.getElapsedTime();
         root.rotation.y += prefersReduced ? 0.0006 : 0.0024;
+        root.position.y = state.yLift;
 
         if (points && pointAttr && modelPositions && chaosPositions) {
           const m = state.morph;
@@ -601,6 +801,26 @@
       window.addEventListener("resize", fitRenderer);
       fitRenderer();
       animate();
+    </script>
+    <script>
+      const insightLinks = Array.from(document.querySelectorAll("#insights .toc-link"));
+      const insightSections = insightLinks
+        .map((link) => document.querySelector(link.getAttribute("href")))
+        .filter(Boolean);
+
+      const insightObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const id = `#${entry.target.id}`;
+            insightLinks.forEach((link) => link.classList.toggle("active", link.getAttribute("href") === id));
+          });
+        },
+        { rootMargin: "-45% 0px -45% 0px", threshold: 0.01 },
+      );
+
+      insightSections.forEach((section) => insightObserver.observe(section));
+      if (insightLinks[0]) insightLinks[0].classList.add("active");
     </script>
   </body>
 </html>
