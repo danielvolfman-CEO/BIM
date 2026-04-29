@@ -212,6 +212,14 @@
                   MESH_WEB_350K.PLY
                 </div>
                 <div class="absolute right-4 top-4">
+                  <label class="sr-only" for="modelPreset">Модель</label>
+                  <select
+                    id="modelPreset"
+                    class="mb-2 block w-full rounded border border-slate-600 bg-slate-900/85 px-3 py-2 text-[11px] uppercase tracking-[0.14em] text-slate-200"
+                  >
+                    <option value="besedka">Беседка</option>
+                    <option value="mesh">BIM model</option>
+                  </select>
                   <label class="sr-only" for="qualityPreset">Качество модели</label>
                   <select
                     id="qualityPreset"
@@ -423,6 +431,7 @@
       const canvas = document.getElementById("sceneCanvas");
       const modelStatus = document.getElementById("modelStatus");
       const modelBadge = document.querySelector("#sceneCanvas + div");
+      const modelPreset = document.getElementById("modelPreset");
       const qualityPreset = document.getElementById("qualityPreset");
       const stylePreset = document.getElementById("stylePreset");
       const stepCards = Array.from(document.querySelectorAll(".step-card"));
@@ -481,6 +490,7 @@
       let scrollInitialized = false;
       let currentPreset = "100k";
       let currentStylePreset = "original";
+      let currentModelPreset = "besedka";
       let loadTicket = 0;
 
       function fitRenderer() {
@@ -752,19 +762,34 @@
         noisePhase = noise.phases;
 
         if (modelStatus) modelStatus.textContent = `Модель загружена • ${pointCount.toLocaleString()} точек`;
-        if (modelBadge) modelBadge.textContent = currentPreset === "1m" ? "MESH_WEB_1M.PLY" : "MESH_WEB_100K.PLY";
+        if (modelBadge) modelBadge.textContent = getBadgeText();
         updateColorsIfNeeded(true);
         activateCard(0);
         setupScroll();
       }
 
       const loader = new PLYLoader();
-      const presetPaths = {
-        "100k": "Mesh_web_100k.ply",
-        "1m": "Mesh_web_1m.ply",
+      const modelSources = {
+        besedka: {
+          badge: { "100k": "BESEDKA_WEB_100K.PLY", "1m": "BESEDKA_WEB_1M.PLY" },
+          presets: { "100k": "Besedka_web_100k.ply", "1m": "Besedka_web_1m.ply" },
+          fallback: ["Mesh_web_100k.ply", "Model.ply"],
+        },
+        mesh: {
+          badge: { "100k": "MESH_WEB_100K.PLY", "1m": "MESH_WEB_1M.PLY" },
+          presets: { "100k": "Mesh_web_100k.ply", "1m": "Mesh_web_1m.ply" },
+          fallback: [encodeURI("Mesh[Объект - 2.00 mm] (level 11).ply"), "Model.ply"],
+        },
       };
-      const fallbackModelPath = encodeURI("Mesh[Объект - 2.00 mm] (level 11).ply");
-      const secondFallbackModelPath = "Model.ply";
+
+      function getActiveSource() {
+        return modelSources[currentModelPreset] || modelSources.besedka;
+      }
+
+      function getBadgeText() {
+        const source = getActiveSource();
+        return source.badge[currentPreset] || source.badge["100k"];
+      }
 
       function onGeometryLoaded(geometry, ticket) {
           if (ticket !== loadTicket) return;
@@ -814,21 +839,43 @@
       function loadModelPreset() {
         loadTicket += 1;
         const ticket = loadTicket;
-        const primaryPath = presetPaths[currentPreset] || presetPaths["100k"];
+        const source = getActiveSource();
+        const primaryPath = source.presets[currentPreset] || source.presets["100k"];
+        const fallbackChain = source.fallback || [];
         if (modelStatus) modelStatus.textContent = "Загрузка модели...";
+        if (modelBadge) modelBadge.textContent = getBadgeText();
         loader.load(
           primaryPath,
           (g) => onGeometryLoaded(g, ticket),
           undefined,
           () => {
-            loader.load(
-              fallbackModelPath,
-              (g) => onGeometryLoaded(g, ticket),
-              undefined,
-              () => loader.load(secondFallbackModelPath, (g) => onGeometryLoaded(g, ticket), undefined, (e) => onGeometryError(e, ticket)),
-            );
+            const [firstFallback, secondFallback] = fallbackChain;
+            if (firstFallback) {
+              loader.load(
+                firstFallback,
+                (g) => onGeometryLoaded(g, ticket),
+                undefined,
+                () => {
+                  if (secondFallback) {
+                    loader.load(secondFallback, (g) => onGeometryLoaded(g, ticket), undefined, (e) => onGeometryError(e, ticket));
+                  } else {
+                    onGeometryError(new Error("Fallback model missing"), ticket);
+                  }
+                },
+              );
+            } else {
+              onGeometryError(new Error("No model preset fallback configured"), ticket);
+            }
           },
         );
+      }
+
+      if (modelPreset) {
+        modelPreset.value = currentModelPreset;
+        modelPreset.addEventListener("change", (e) => {
+          currentModelPreset = e.target.value === "mesh" ? "mesh" : "besedka";
+          loadModelPreset();
+        });
       }
 
       if (qualityPreset) {
