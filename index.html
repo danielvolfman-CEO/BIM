@@ -209,7 +209,17 @@
               <div class="relative -mx-10 h-[112%] w-[calc(100%+5rem)] -translate-y-[6%] bg-transparent md:-mx-12 md:w-[calc(100%+6rem)] lg:-mx-16 lg:w-[calc(100%+8rem)]">
                 <canvas id="sceneCanvas" class="h-full w-full"></canvas>
                 <div class="pointer-events-none absolute left-4 top-4 rounded bg-slate-900/80 px-3 py-2 text-[11px] tracking-[0.2em] text-slate-200">
-                  MODEL.PLY
+                  MESH_WEB_350K.PLY
+                </div>
+                <div class="absolute right-4 top-4">
+                  <label class="sr-only" for="qualityPreset">Качество модели</label>
+                  <select
+                    id="qualityPreset"
+                    class="rounded border border-slate-600 bg-slate-900/85 px-3 py-2 text-[11px] uppercase tracking-[0.14em] text-slate-200"
+                  >
+                    <option value="100k">100k points</option>
+                    <option value="1m">1M points</option>
+                  </select>
                 </div>
                 <div id="modelStatus" class="pointer-events-none absolute bottom-4 left-4 rounded bg-slate-900/75 px-3 py-2 text-[11px] tracking-[0.16em] text-slate-200">
                   Загрузка модели...
@@ -402,6 +412,8 @@
 
       const canvas = document.getElementById("sceneCanvas");
       const modelStatus = document.getElementById("modelStatus");
+      const modelBadge = document.querySelector("#sceneCanvas + div");
+      const qualityPreset = document.getElementById("qualityPreset");
       const stepCards = Array.from(document.querySelectorAll(".step-card"));
       const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 
@@ -454,6 +466,9 @@
       const vividTmp = new THREE.Color();
       const hslTmp = { h: 0, s: 0, l: 0 };
       let pointSprite = null;
+      let scrollInitialized = false;
+      let currentPreset = "100k";
+      let loadTicket = 0;
 
       function fitRenderer() {
         const rect = canvas.getBoundingClientRect();
@@ -472,12 +487,8 @@
         });
       }
 
-      function maxPointsForDevice() {
-        const w = window.innerWidth;
-        const dpr = window.devicePixelRatio || 1;
-        if (w < 900) return 70000;
-        if (dpr > 1.75) return 90000;
-        return 100000;
+      function targetPointsForPreset() {
+        return currentPreset === "1m" ? 1_000_000 : 100_000;
       }
 
       function samplePositions(src, wantedCount) {
@@ -629,6 +640,8 @@
       }
 
       function setupScroll() {
+        if (scrollInitialized) return;
+        scrollInitialized = true;
         const section = document.getElementById("scrolly");
         ScrollTrigger.create({
           trigger: section,
@@ -676,7 +689,14 @@
       }
 
       function buildPointScene(srcPos, srcColor) {
-        const maxPoints = maxPointsForDevice();
+        if (points) {
+          root.remove(points);
+          points.geometry.dispose();
+          points.material.dispose();
+          points = null;
+        }
+
+        const maxPoints = targetPointsForPreset();
         const sampledPos = samplePositions(srcPos, maxPoints);
         pointCount = sampledPos.length / 3;
         const sampledColors = sampleColors(srcColor, pointCount);
@@ -717,15 +737,22 @@
         noisePhase = noise.phases;
 
         if (modelStatus) modelStatus.textContent = `Модель загружена • ${pointCount.toLocaleString()} точек`;
+        if (modelBadge) modelBadge.textContent = currentPreset === "1m" ? "MESH_WEB_1M.PLY" : "MESH_WEB_100K.PLY";
         updateColorsIfNeeded(true);
         activateCard(0);
         setupScroll();
       }
 
       const loader = new PLYLoader();
-      loader.load(
-        "Model.ply",
-        (geometry) => {
+      const presetPaths = {
+        "100k": "Mesh_web_100k.ply",
+        "1m": "Mesh_web_1m.ply",
+      };
+      const fallbackModelPath = encodeURI("Mesh[Объект - 2.00 mm] (level 11).ply");
+      const secondFallbackModelPath = "Model.ply";
+
+      function onGeometryLoaded(geometry, ticket) {
+          if (ticket !== loadTicket) return;
           geometry.computeBoundingBox();
           geometry.center();
           geometry.rotateX(-Math.PI / 2);
@@ -748,9 +775,10 @@
             }
           }
           buildPointScene(pos, colors);
-        },
-        undefined,
-        (error) => {
+      }
+
+      function onGeometryError(error, ticket) {
+          if (ticket !== loadTicket) return;
           if (modelStatus) modelStatus.textContent = "Ошибка PLY: fallback";
           console.error("PLY load error:", error);
           const fallback = new THREE.TorusKnotGeometry(0.85, 0.25, 360, 36);
@@ -766,8 +794,37 @@
             colors[i * 3 + 2] = 0.85;
           }
           buildPointScene(pos, colors);
-        },
-      );
+      }
+
+      function loadModelPreset() {
+        loadTicket += 1;
+        const ticket = loadTicket;
+        const primaryPath = presetPaths[currentPreset] || presetPaths["100k"];
+        if (modelStatus) modelStatus.textContent = "Загрузка модели...";
+        loader.load(
+          primaryPath,
+          (g) => onGeometryLoaded(g, ticket),
+          undefined,
+          () => {
+            loader.load(
+              fallbackModelPath,
+              (g) => onGeometryLoaded(g, ticket),
+              undefined,
+              () => loader.load(secondFallbackModelPath, (g) => onGeometryLoaded(g, ticket), undefined, (e) => onGeometryError(e, ticket)),
+            );
+          },
+        );
+      }
+
+      if (qualityPreset) {
+        qualityPreset.value = currentPreset;
+        qualityPreset.addEventListener("change", (e) => {
+          currentPreset = e.target.value === "1m" ? "1m" : "100k";
+          loadModelPreset();
+        });
+      }
+
+      loadModelPreset();
 
       function animate() {
         const t = clock.getElapsedTime();
