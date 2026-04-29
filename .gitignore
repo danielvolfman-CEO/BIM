@@ -5,5 +5,10 @@ reference/
 *.7z
 Снимок экрана*.png
 
-Mesh[Объект - 2.00 mm] (level 11).ply
-Mesh_web_350k.ply
+models/Mesh[Объект - 2.00 mm] (level 11).ply
+models/Mesh_web_350k.ply
+
+.venv/
+models/Беседка.e57
+models/*level 11*.ply
+models/*.e57
