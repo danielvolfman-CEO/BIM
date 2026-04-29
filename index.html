@@ -224,6 +224,16 @@
                 <div id="modelStatus" class="pointer-events-none absolute bottom-4 left-4 rounded bg-slate-900/75 px-3 py-2 text-[11px] tracking-[0.16em] text-slate-200">
                   Загрузка модели...
                 </div>
+                <div class="absolute bottom-4 right-4">
+                  <label class="sr-only" for="stylePreset">Стиль финала</label>
+                  <select
+                    id="stylePreset"
+                    class="rounded border border-slate-600 bg-slate-900/85 px-3 py-2 text-[11px] uppercase tracking-[0.14em] text-slate-200"
+                  >
+                    <option value="original">Original style</option>
+                    <option value="grid">Grid style</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
@@ -414,6 +424,7 @@
       const modelStatus = document.getElementById("modelStatus");
       const modelBadge = document.querySelector("#sceneCanvas + div");
       const qualityPreset = document.getElementById("qualityPreset");
+      const stylePreset = document.getElementById("stylePreset");
       const stepCards = Array.from(document.querySelectorAll(".step-card"));
       const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 
@@ -459,6 +470,7 @@
         finalClarity: 0,
         visibleRatio: 0.42,
         yLift: 0.42,
+        gridSnap: 0,
       };
 
       const startNeon = new THREE.Color(0xffffff);
@@ -468,6 +480,7 @@
       let pointSprite = null;
       let scrollInitialized = false;
       let currentPreset = "100k";
+      let currentStylePreset = "original";
       let loadTicket = 0;
 
       function fitRenderer() {
@@ -655,6 +668,8 @@
             state.chaos = 1 - THREE.MathUtils.smoothstep(p, 0.01, 0.68);
             state.beamIntensity = 1 - THREE.MathUtils.smoothstep(p, 0.18, 0.46);
             state.finalClarity = THREE.MathUtils.smoothstep(p, 0.72, 1);
+            const snapProgress = THREE.MathUtils.smoothstep(p, 0.74, 1);
+            state.gridSnap = currentStylePreset === "grid" ? snapProgress : 0;
             state.visibleRatio = 0.42 + THREE.MathUtils.smoothstep(p, 0.0, 0.84) * 0.58;
             state.opacity = 1;
             state.pointSize = 0.018 - THREE.MathUtils.smoothstep(p, 0.58, 1) * 0.0032;
@@ -824,6 +839,13 @@
         });
       }
 
+      if (stylePreset) {
+        stylePreset.value = currentStylePreset;
+        stylePreset.addEventListener("change", (e) => {
+          currentStylePreset = e.target.value === "grid" ? "grid" : "original";
+        });
+      }
+
       loadModelPreset();
 
       function animate() {
@@ -835,12 +857,27 @@
           const m = state.morph;
           const inv = 1 - m;
           const chaosAmp = 0.08 * state.chaos;
+          const gridStep = 0.012;
+          const gridSnap = state.gridSnap;
           for (let i = 0; i < pointCount; i += 1) {
             const k = i * 3;
             const wobble = chaosAmp * (0.5 + 0.5 * Math.sin(t * 3.2 + noisePhase[i]));
-            outPositions[k] = chaosPositions[k] * inv + modelPositions[k] * m + noiseVec[k] * wobble;
-            outPositions[k + 1] = chaosPositions[k + 1] * inv + modelPositions[k + 1] * m + noiseVec[k + 1] * wobble;
-            outPositions[k + 2] = chaosPositions[k + 2] * inv + modelPositions[k + 2] * m + noiseVec[k + 2] * wobble;
+            let x = chaosPositions[k] * inv + modelPositions[k] * m + noiseVec[k] * wobble;
+            let y = chaosPositions[k + 1] * inv + modelPositions[k + 1] * m + noiseVec[k + 1] * wobble;
+            let z = chaosPositions[k + 2] * inv + modelPositions[k + 2] * m + noiseVec[k + 2] * wobble;
+
+            if (gridSnap > 0) {
+              const gx = Math.round(x / gridStep) * gridStep;
+              const gy = Math.round(y / gridStep) * gridStep;
+              const gz = Math.round(z / gridStep) * gridStep;
+              x = THREE.MathUtils.lerp(x, gx, gridSnap);
+              y = THREE.MathUtils.lerp(y, gy, gridSnap);
+              z = THREE.MathUtils.lerp(z, gz, gridSnap);
+            }
+
+            outPositions[k] = x;
+            outPositions[k + 1] = y;
+            outPositions[k + 2] = z;
           }
           pointAttr.needsUpdate = true;
           points.material.size = state.pointSize;
