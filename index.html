@@ -471,6 +471,8 @@
       let baseColorAttr = null;
       let noiseVec = null;
       let noisePhase = null;
+      let chaosFlowPhase = null;
+      let chaosFlowSpread = 1;
       let clock = new THREE.Clock();
       let lastColorMix = -1;
 
@@ -593,15 +595,18 @@
 
       function createChaosPositions(target, preset = "sphere") {
         const out = new Float32Array(target.length);
+        chaosFlowPhase = null;
         let radius = 0;
         for (let i = 0; i < target.length; i += 3) {
           const r = Math.hypot(target[i], target[i + 1], target[i + 2]);
           if (r > radius) radius = r;
         }
         const spread = Math.max(1, radius * 0.44);
+        chaosFlowSpread = spread;
 
         if (preset === "infinity") {
-          const a = spread * 0.48;
+          const a = spread * 0.62;
+          const phases = new Float32Array(target.length / 3);
           for (let i = 0; i < target.length; i += 3) {
             const t = Math.random() * Math.PI * 2;
             const x = a * Math.sin(t);
@@ -610,7 +615,9 @@
             out[i] = x + (Math.random() - 0.5) * spread * 0.06;
             out[i + 1] = y + (Math.random() - 0.5) * spread * 0.06;
             out[i + 2] = z + (Math.random() - 0.5) * spread * 0.04;
+            phases[i / 3] = t + (Math.random() - 0.5) * 0.25;
           }
+          chaosFlowPhase = phases;
           return out;
         }
 
@@ -974,7 +981,10 @@
 
       function animate() {
         const t = clock.getElapsedTime();
-        root.rotation.y += prefersReduced ? 0.0006 : 0.0024;
+        const lockInfinityRotation = currentChaosPreset === "infinity" && state.chaos > 0.08;
+        if (!lockInfinityRotation) {
+          root.rotation.y += prefersReduced ? 0.0006 : 0.0024;
+        }
         root.position.y = state.yLift;
 
         if (points && pointAttr && modelPositions && chaosPositions) {
@@ -984,22 +994,24 @@
           const gridStep = 0.012;
           const gridSnap = state.gridSnap;
           const visibleCount = Math.max(1, Math.floor(pointCount * state.visibleRatio));
+          const isInfinityPreset = currentChaosPreset === "infinity";
           for (let i = 0; i < visibleCount; i += 1) {
             const k = i * 3;
-            const wobble = chaosAmp * (0.5 + 0.5 * Math.sin(t * 2.2 + noisePhase[i]));
+            const wobbleBase = chaosAmp * (0.5 + 0.5 * Math.sin(t * 2.2 + noisePhase[i]));
+            const wobble = isInfinityPreset ? wobbleBase * 0.18 : wobbleBase;
             let x = chaosPositions[k] * inv + modelPositions[k] * m + noiseVec[k] * wobble;
             let y = chaosPositions[k + 1] * inv + modelPositions[k + 1] * m + noiseVec[k + 1] * wobble;
             let z = chaosPositions[k + 2] * inv + modelPositions[k + 2] * m + noiseVec[k + 2] * wobble;
 
             if (state.chaos > 0.001) {
-              if (currentChaosPreset === "infinity") {
-                const pulse = 1 + Math.sin(t * 1.9 + noisePhase[i] * 0.9) * 0.06 * state.chaos;
-                const drift = Math.sin(t * 2.5 + noisePhase[i]) * 0.022 * state.chaos;
-                x *= pulse;
-                z *= pulse;
-                x += Math.cos(noisePhase[i] * 1.7) * drift;
-                z += Math.sin(noisePhase[i] * 1.7) * drift;
-                y += Math.sin(t * 2.1 + noisePhase[i] * 0.5) * 0.012 * state.chaos;
+              if (currentChaosPreset === "infinity" && chaosFlowPhase && chaosFlowPhase[i] !== undefined) {
+                const tt = chaosFlowPhase[i] + t * 0.55 * state.chaos;
+                const aInf = chaosFlowSpread * 0.62;
+                const fx = aInf * Math.sin(tt);
+                const fy = aInf * Math.sin(tt) * Math.cos(tt) * 0.56;
+                x = THREE.MathUtils.lerp(x, fx, 0.9 * state.chaos);
+                y = THREE.MathUtils.lerp(y, fy, 0.9 * state.chaos);
+                z = THREE.MathUtils.lerp(z, chaosPositions[k + 2], 0.9 * state.chaos);
               } else if (currentChaosPreset === "wind") {
                 const flowAmp = 0.07 * state.chaos;
                 y += Math.sin(x * 6.5 + t * 2.1 + noisePhase[i]) * flowAmp;
