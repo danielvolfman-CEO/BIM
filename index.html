@@ -4,6 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BIM и лазерное сканирование</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("gv-theme");
+          if (t === "light") document.documentElement.dataset.theme = "light";
+        } catch (e) {}
+      })();
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -749,13 +757,312 @@
           transition: none;
         }
       }
+
+      .theme-toggle {
+        position: absolute;
+        right: 18px;
+        top: 18px;
+        z-index: 60;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        font-family: var(--bp-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(226, 232, 240, 0.9);
+        background: rgba(11, 15, 22, 0.7);
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        cursor: pointer;
+        transition: border-color 200ms ease, background 200ms ease, color 200ms ease;
+      }
+      .theme-toggle:hover {
+        border-color: var(--bp-cyan);
+        color: #ecfeff;
+      }
+      .theme-toggle svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+      }
+      .theme-toggle .icon-sun { display: none; }
+      .theme-toggle .icon-moon { display: block; }
+      :root[data-theme="light"] .theme-toggle .icon-sun { display: block; }
+      :root[data-theme="light"] .theme-toggle .icon-moon { display: none; }
+
+      :root[data-theme="light"] {
+        --bp-line: rgba(15, 23, 42, 0.07);
+        --bp-line-major: rgba(15, 23, 42, 0.13);
+        --bp-edge: rgba(15, 23, 42, 0.22);
+        --bp-cyan: #0e7490;
+        --bp-cyan-soft: rgba(14, 116, 144, 0.5);
+        color-scheme: light;
+      }
+      :root[data-theme="light"] body {
+        background: #fbf8ef;
+        color: #1e293b;
+      }
+      :root[data-theme="light"] .blueprint-bg {
+        background-color: #fbf8ef;
+      }
+      :root[data-theme="light"] .blueprint-bg::before,
+      :root[data-theme="light"] .blueprint-bg::after {
+        opacity: 0.45;
+      }
+
+      :root[data-theme="light"] .text-slate-100 { color: #0f172a; }
+      :root[data-theme="light"] .text-slate-200 { color: #1e293b; }
+      :root[data-theme="light"] .text-slate-300 { color: #334155; }
+      :root[data-theme="light"] .text-slate-400 { color: #475569; }
+      :root[data-theme="light"] .text-slate-500 { color: #64748b; }
+
+      :root[data-theme="light"] .bg-slate-950 { background-color: #f5efe1; }
+      :root[data-theme="light"] .bg-slate-950\/45 { background-color: rgba(245, 239, 225, 0.6); }
+      :root[data-theme="light"] .bg-slate-950\/55 { background-color: rgba(245, 239, 225, 0.7); }
+      :root[data-theme="light"] .bg-slate-950\/60 { background-color: rgba(245, 239, 225, 0.75); }
+      :root[data-theme="light"] .bg-slate-950\/65 { background-color: rgba(245, 239, 225, 0.78); }
+      :root[data-theme="light"] .bg-slate-950\/80 { background-color: rgba(245, 239, 225, 0.9); }
+      :root[data-theme="light"] .bg-slate-900\/30 { background-color: rgba(225, 217, 198, 0.4); }
+      :root[data-theme="light"] .bg-slate-900\/35 { background-color: rgba(225, 217, 198, 0.5); }
+      :root[data-theme="light"] .bg-slate-900\/40 { background-color: rgba(225, 217, 198, 0.55); }
+      :root[data-theme="light"] .bg-slate-900\/45 { background-color: rgba(225, 217, 198, 0.6); }
+      :root[data-theme="light"] .bg-slate-800\/35 { background-color: rgba(216, 207, 185, 0.45); }
+      :root[data-theme="light"] .bg-slate-800\/40 { background-color: rgba(216, 207, 185, 0.55); }
+      :root[data-theme="light"] .bg-slate-700\/55 { background-color: rgba(216, 207, 185, 0.65); }
+
+      :root[data-theme="light"] .border-slate-500\/40,
+      :root[data-theme="light"] .border-slate-500\/60,
+      :root[data-theme="light"] .border-slate-500\/70 { border-color: rgba(15, 23, 42, 0.3); }
+      :root[data-theme="light"] .border-slate-600 { border-color: rgba(15, 23, 42, 0.25); }
+      :root[data-theme="light"] .border-slate-700\/60,
+      :root[data-theme="light"] .border-slate-700\/70 { border-color: rgba(15, 23, 42, 0.2); }
+      :root[data-theme="light"] .border-slate-800\/80 { border-color: rgba(15, 23, 42, 0.14); }
+      :root[data-theme="light"] .divide-slate-800\/80 > * + * { border-color: rgba(15, 23, 42, 0.14); }
+
+      :root[data-theme="light"] .frame-corners::before,
+      :root[data-theme="light"] .frame-corners::after,
+      :root[data-theme="light"] .frame-corners > .fc-tr,
+      :root[data-theme="light"] .frame-corners > .fc-bl {
+        border-color: rgba(15, 23, 42, 0.55);
+      }
+      :root[data-theme="light"] .frame-corners:hover::before,
+      :root[data-theme="light"] .frame-corners:hover::after,
+      :root[data-theme="light"] .frame-corners:hover > .fc-tr,
+      :root[data-theme="light"] .frame-corners:hover > .fc-bl {
+        border-color: var(--bp-cyan);
+      }
+
+      :root[data-theme="light"] .tech-tag {
+        color: #1e293b;
+        border-color: rgba(15, 23, 42, 0.3);
+        background: rgba(15, 23, 42, 0.05);
+      }
+      :root[data-theme="light"] .tech-tag::before {
+        box-shadow: 0 0 0 1px rgba(14, 116, 144, 0.3);
+      }
+
+      :root[data-theme="light"] .rule-line::before,
+      :root[data-theme="light"] .ruler-scale::before {
+        background: rgba(15, 23, 42, 0.35);
+      }
+      :root[data-theme="light"] .rule-line::after {
+        background-image: repeating-linear-gradient(
+          to right,
+          rgba(15, 23, 42, 0.5) 0 1px,
+          transparent 1px 64px
+        );
+      }
+      :root[data-theme="light"] .tech-line::before {
+        background: rgba(15, 23, 42, 0.35);
+      }
+      :root[data-theme="light"] .tech-line::after {
+        background-image: repeating-linear-gradient(
+          to right,
+          rgba(15, 23, 42, 0.45) 0 1px,
+          transparent 1px 32px
+        );
+      }
+
+      :root[data-theme="light"] .toc-link {
+        color: #475569;
+      }
+      :root[data-theme="light"] .toc-link.active {
+        color: #0f172a;
+        background: rgba(15, 23, 42, 0.06);
+        border-left-color: var(--bp-cyan);
+      }
+      :root[data-theme="light"] .toc-link.active .toc-num {
+        color: var(--bp-cyan);
+      }
+
+      :root[data-theme="light"] .info-card {
+        border-color: rgba(15, 23, 42, 0.18);
+        background: rgba(15, 23, 42, 0.04);
+      }
+      :root[data-theme="light"] .info-card::before,
+      :root[data-theme="light"] .info-card::after {
+        border-color: rgba(15, 23, 42, 0.45);
+      }
+
+      :root[data-theme="light"] .tech-panel::before {
+        background-image:
+          linear-gradient(rgba(14, 116, 144, 0.06) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(14, 116, 144, 0.06) 1px, transparent 1px);
+      }
+      :root[data-theme="light"] .tech-panel::after {
+        color: rgba(14, 116, 144, 0.7);
+        border-color: rgba(14, 116, 144, 0.45);
+      }
+
+      :root[data-theme="light"] .btn-tech {
+        color: #0f172a;
+        background: rgba(15, 23, 42, 0.05);
+        border-color: rgba(15, 23, 42, 0.3);
+      }
+      :root[data-theme="light"] .btn-tech:hover {
+        color: #0e7490;
+        background: rgba(14, 116, 144, 0.1);
+        border-color: var(--bp-cyan);
+      }
+      :root[data-theme="light"] .btn-tech.btn-ghost {
+        color: #334155;
+        border-color: rgba(15, 23, 42, 0.25);
+      }
+      :root[data-theme="light"] .btn-tech::before,
+      :root[data-theme="light"] .btn-tech::after {
+        border-color: var(--bp-cyan);
+      }
+
+      :root[data-theme="light"] .step-card::before {
+        background-image: repeating-linear-gradient(
+          to bottom,
+          rgba(15, 23, 42, 0.35) 0 6px,
+          transparent 6px 12px
+        );
+      }
+      :root[data-theme="light"] .step-card::after {
+        background: #fbf8ef;
+        border-color: rgba(15, 23, 42, 0.45);
+      }
+      :root[data-theme="light"] .step-card.active::after {
+        background: var(--bp-cyan);
+        border-color: var(--bp-cyan);
+      }
+
+      :root[data-theme="light"] .hud-header {
+        background: rgba(251, 248, 239, 0.92);
+        border-color: rgba(15, 23, 42, 0.25);
+        color: #1e293b;
+      }
+      :root[data-theme="light"] .hud-header .scan-bar {
+        background: rgba(15, 23, 42, 0.1);
+      }
+      :root[data-theme="light"] .hud-header .scan-bar::after {
+        background-image: repeating-linear-gradient(
+          to right,
+          rgba(15, 23, 42, 0.4) 0 1px,
+          transparent 1px 12px
+        );
+      }
+      :root[data-theme="light"] .hud-panel {
+        background: rgba(251, 248, 239, 0.92);
+        border-color: rgba(15, 23, 42, 0.3);
+      }
+      :root[data-theme="light"] .hud-row label {
+        color: rgba(15, 23, 42, 0.6);
+      }
+      :root[data-theme="light"] .hud-row select {
+        color: #0f172a;
+        background: rgba(15, 23, 42, 0.04);
+        border-color: rgba(15, 23, 42, 0.25);
+      }
+      :root[data-theme="light"] .hud-row select:focus,
+      :root[data-theme="light"] .hud-row select:hover {
+        border-color: var(--bp-cyan);
+      }
+
+      :root[data-theme="light"] .status-pill {
+        background: rgba(251, 248, 239, 0.92);
+        border-color: rgba(15, 23, 42, 0.25);
+        color: #1e293b;
+      }
+      :root[data-theme="light"] .status-pill .dot {
+        border-color: rgba(15, 23, 42, 0.45);
+      }
+
+      :root[data-theme="light"] .form-field input,
+      :root[data-theme="light"] .form-field textarea {
+        color: #0f172a;
+        background: rgba(15, 23, 42, 0.03);
+        border-color: rgba(15, 23, 42, 0.25);
+      }
+      :root[data-theme="light"] .form-field input::placeholder,
+      :root[data-theme="light"] .form-field textarea::placeholder {
+        color: rgba(15, 23, 42, 0.4);
+      }
+      :root[data-theme="light"] .form-field .field-rule {
+        background-image: repeating-linear-gradient(
+          to right,
+          rgba(15, 23, 42, 0.3) 0 4px,
+          transparent 4px 8px
+        );
+      }
+
+      :root[data-theme="light"] .title-stamp {
+        background: rgba(15, 23, 42, 0.04);
+        border-color: rgba(15, 23, 42, 0.3);
+        color: #1e293b;
+      }
+      :root[data-theme="light"] .title-stamp > div {
+        border-right-color: rgba(15, 23, 42, 0.18);
+      }
+      :root[data-theme="light"] .title-stamp .ts-key {
+        color: rgba(15, 23, 42, 0.55);
+      }
+      :root[data-theme="light"] .title-stamp .ts-val {
+        color: #0f172a;
+      }
+
+      :root[data-theme="light"] .pictogram {
+        color: rgba(14, 116, 144, 0.85);
+      }
+
+      :root[data-theme="light"] .brand-logo,
+      :root[data-theme="light"] .brand-logo-soft,
+      :root[data-theme="light"] .brand-logo-stamp,
+      :root[data-theme="light"] .brand-logo-hero {
+        filter: invert(1) brightness(0.18);
+        opacity: 0.92;
+      }
+
+      :root[data-theme="light"] .theme-toggle {
+        color: #1e293b;
+        background: rgba(251, 248, 239, 0.92);
+        border-color: rgba(15, 23, 42, 0.3);
+      }
+      :root[data-theme="light"] .theme-toggle:hover {
+        color: #0e7490;
+        border-color: var(--bp-cyan);
+      }
     </style>
   </head>
   <body class="text-slate-100 antialiased">
     <div class="blueprint-bg" aria-hidden="true"></div>
     <div id="scrollProgress" class="scroll-progress" aria-hidden="true"></div>
 
-    <header class="frame-corners relative mx-auto max-w-7xl bg-slate-950/45 px-6 pb-24 pt-10 md:px-10 lg:px-12 lg:pb-32 lg:pt-16">
+    <button id="themeToggle" type="button" class="theme-toggle" aria-label="Переключить тему">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+      </svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+      </svg>
+      <span id="themeLabel">Light</span>
+    </button>
+
+    <header class="frame-corners relative min-h-[80vh] w-full bg-slate-950/45 px-6 pb-24 pt-10 md:px-10 lg:px-12 lg:pb-32 lg:pt-16">
       <span class="fc-tr"></span><span class="fc-bl"></span>
       <div class="flex items-center justify-between gap-4">
         <div class="flex items-center gap-3">
@@ -789,14 +1096,14 @@
 
     <main>
       <section id="scrolly" class="relative bg-slate-950/45 py-16 md:py-24">
-        <div class="mx-auto max-w-7xl px-6 md:px-10 lg:px-12">
+        <div class="mx-auto max-w-[90rem] px-6 md:px-10 lg:px-12">
           <div class="mb-10 flex flex-wrap items-center justify-between gap-4">
             <span class="tech-tag">S-01 · Pipeline · Scan-to-BIM</span>
             <span class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-400">Lod 200 → 300 → 400</span>
           </div>
           <div class="rule-line" aria-hidden="true"></div>
         </div>
-        <div class="mx-auto grid max-w-7xl gap-10 px-6 pt-16 md:px-10 lg:grid-cols-[1fr_1fr] lg:px-12">
+        <div class="mx-auto grid max-w-[90rem] gap-10 px-6 pt-16 md:px-10 lg:grid-cols-[1fr_1fr] lg:px-12">
           <div class="mt-6 space-y-20 pb-12 lg:pr-8">
             <article class="step-card flex min-h-[44vh] flex-col justify-center p-2 transition md:p-4" data-step="0">
               <p class="step-kicker uppercase text-slate-400"><span class="bracket">[</span> 01 / 04 <span class="bracket">]</span> · Позиционирование на рынке</p>
@@ -883,7 +1190,7 @@
       </section>
 
       <section id="insights" class="bg-slate-950 py-16 md:py-24 lg:py-28">
-        <div class="mx-auto max-w-7xl px-6 md:px-10 lg:px-12">
+        <div class="mx-auto max-w-[90rem] px-6 md:px-10 lg:px-12">
           <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
             <span class="tech-tag">S-02 · BIM Expertise · Insights Sheet</span>
             <span class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-400">8 модулей · IFC4 / РД / 5D</span>
@@ -1001,7 +1308,7 @@
       </section>
 
       <section class="bg-slate-950 py-16 md:py-24 lg:py-28">
-        <div class="mx-auto max-w-7xl px-6 md:px-10 lg:px-12">
+        <div class="mx-auto max-w-[90rem] px-6 md:px-10 lg:px-12">
           <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
             <span class="tech-tag">S-07 · Tech Stack · Hardware + Software</span>
             <div class="flex items-center gap-3">
@@ -1071,7 +1378,7 @@
       </section>
 
       <section id="cta" class="bg-slate-950/45 py-16 md:py-24">
-        <div class="mx-auto max-w-7xl px-6 md:px-10 lg:px-12">
+        <div class="mx-auto max-w-[90rem] px-6 md:px-10 lg:px-12">
           <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
             <span class="tech-tag">S-08 · Engineering Brief · Request Form</span>
             <span class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-400">Form-RQ-001 · Rev A</span>
@@ -1118,7 +1425,7 @@
       </section>
 
       <section class="px-6 pb-12 md:px-10 lg:px-12" aria-label="Основная надпись">
-        <div class="mx-auto max-w-7xl">
+        <div class="mx-auto max-w-[90rem]">
           <div class="mb-4 flex justify-end">
             <img class="brand-logo-stamp" src="./лого ГеоВектор белый.png" alt="ГеоВектор" />
           </div>
@@ -1145,6 +1452,49 @@
     </main>
 
     <script>
+      (() => {
+        const KEY = "gv-theme";
+        const btn = document.getElementById("themeToggle");
+        const label = document.getElementById("themeLabel");
+        const root = document.documentElement;
+        function fogColorFor(theme) {
+          return theme === "light" ? 0xfbf8ef : 0x0b0f16;
+        }
+        function dispatch(theme) {
+          window.dispatchEvent(
+            new CustomEvent("gv-theme-change", {
+              detail: { theme, fog: fogColorFor(theme) },
+            }),
+          );
+        }
+        function apply(theme) {
+          if (theme === "light") {
+            root.dataset.theme = "light";
+            if (label) label.textContent = "Dark";
+            if (btn) btn.setAttribute("aria-label", "Тёмная тема");
+          } else {
+            delete root.dataset.theme;
+            if (label) label.textContent = "Light";
+            if (btn) btn.setAttribute("aria-label", "Светлая тема");
+          }
+          dispatch(theme);
+        }
+        let saved = "dark";
+        try {
+          saved = localStorage.getItem(KEY) || "dark";
+        } catch (e) {}
+        apply(saved);
+        if (btn) {
+          btn.addEventListener("click", () => {
+            const next = root.dataset.theme === "light" ? "dark" : "light";
+            try {
+              localStorage.setItem(KEY, next);
+            } catch (e) {}
+            apply(next);
+          });
+        }
+      })();
+
       (() => {
         const bar = document.getElementById("scrollProgress");
         if (!bar) return;
@@ -1196,7 +1546,13 @@
       const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 
       const scene = new THREE.Scene();
-      scene.fog = new THREE.Fog(0x0b0f16, 4.6, 12.8);
+      const initialFog = document.documentElement.dataset.theme === "light" ? 0xfbf8ef : 0x0b0f16;
+      scene.fog = new THREE.Fog(initialFog, 4.6, 12.8);
+      window.addEventListener("gv-theme-change", (e) => {
+        if (scene.fog && e.detail && typeof e.detail.fog === "number") {
+          scene.fog.color.setHex(e.detail.fog);
+        }
+      });
 
       const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
       camera.position.set(0, 0.16, 2.62);
