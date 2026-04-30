@@ -27,17 +27,310 @@
     <style>
       :root {
         color-scheme: dark;
+        --bp-line: rgba(148, 163, 184, 0.08);
+        --bp-line-major: rgba(148, 163, 184, 0.14);
+        --bp-edge: rgba(148, 163, 184, 0.22);
+        --bp-cyan: #22d3ee;
+        --bp-cyan-soft: rgba(34, 211, 238, 0.55);
+        --bp-mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
       }
 
       body {
         background: #0b0f16;
       }
 
-      .grid-overlay {
+      .blueprint-bg {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: -10;
+        background-color: #0b0f16;
         background-image:
-          linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
-        background-size: 44px 44px;
+          linear-gradient(var(--bp-line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--bp-line) 1px, transparent 1px),
+          linear-gradient(var(--bp-line-major) 1px, transparent 1px),
+          linear-gradient(90deg, var(--bp-line-major) 1px, transparent 1px);
+        background-size: 16px 16px, 16px 16px, 128px 128px, 128px 128px;
+      }
+
+      .blueprint-bg::before,
+      .blueprint-bg::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 14px;
+        background-image: repeating-linear-gradient(
+          to bottom,
+          var(--bp-edge) 0 1px,
+          transparent 1px 32px
+        );
+        opacity: 0.55;
+      }
+      .blueprint-bg::before {
+        left: 0;
+      }
+      .blueprint-bg::after {
+        right: 0;
+      }
+
+      .mono {
+        font-family: var(--bp-mono);
+        font-feature-settings: "tnum", "ss01";
+      }
+
+      .frame-corners {
+        position: relative;
+      }
+      .frame-corners::before,
+      .frame-corners::after,
+      .frame-corners > .fc-tl,
+      .frame-corners > .fc-tr,
+      .frame-corners > .fc-bl,
+      .frame-corners > .fc-br {
+        pointer-events: none;
+      }
+      .frame-corners::before,
+      .frame-corners::after {
+        content: "";
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        border-color: rgba(148, 163, 184, 0.8);
+        transition: border-color 220ms ease;
+      }
+      .frame-corners::before {
+        top: -1px;
+        left: -1px;
+        border-top: 1px solid;
+        border-left: 1px solid;
+      }
+      .frame-corners::after {
+        bottom: -1px;
+        right: -1px;
+        border-bottom: 1px solid;
+        border-right: 1px solid;
+      }
+      .frame-corners > .fc-tr,
+      .frame-corners > .fc-bl {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        border-color: rgba(148, 163, 184, 0.8);
+        transition: border-color 220ms ease;
+      }
+      .frame-corners > .fc-tr {
+        top: -1px;
+        right: -1px;
+        border-top: 1px solid;
+        border-right: 1px solid;
+      }
+      .frame-corners > .fc-bl {
+        bottom: -1px;
+        left: -1px;
+        border-bottom: 1px solid;
+        border-left: 1px solid;
+      }
+      .frame-corners:hover::before,
+      .frame-corners:hover::after,
+      .frame-corners:hover > .fc-tr,
+      .frame-corners:hover > .fc-bl {
+        border-color: var(--bp-cyan);
+      }
+
+      .tech-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 10px;
+        font-family: var(--bp-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(203, 213, 225, 0.92);
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        background: rgba(15, 23, 42, 0.5);
+      }
+      .tech-tag::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        background: var(--bp-cyan);
+        box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.25);
+      }
+
+      .rule-line {
+        position: relative;
+        height: 14px;
+      }
+      .rule-line::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        height: 1px;
+        background: rgba(148, 163, 184, 0.35);
+      }
+      .rule-line::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: calc(50% - 4px);
+        height: 4px;
+        background-image: repeating-linear-gradient(
+          to right,
+          rgba(148, 163, 184, 0.55) 0 1px,
+          transparent 1px 64px
+        );
+      }
+
+      .ruler-scale {
+        position: relative;
+        width: 240px;
+        height: 14px;
+        margin: 18px auto 0;
+      }
+      .ruler-scale::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        height: 1px;
+        background: rgba(148, 163, 184, 0.5);
+      }
+      .ruler-scale::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-image:
+          repeating-linear-gradient(
+            to right,
+            rgba(148, 163, 184, 0.6) 0 1px,
+            transparent 1px 8px
+          ),
+          repeating-linear-gradient(
+            to right,
+            rgba(148, 163, 184, 0.85) 0 1px,
+            transparent 1px 24px
+          );
+        background-size: 100% 6px, 100% 11px;
+        background-repeat: no-repeat;
+        background-position: center 8px, center 4px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        font-family: var(--bp-mono);
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        color: rgba(226, 232, 240, 0.92);
+        text-transform: uppercase;
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        background: rgba(15, 23, 42, 0.55);
+        clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+      }
+      .chip-num::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border: 1px solid var(--bp-cyan);
+      }
+      .chip-num.is-on::before {
+        background: var(--bp-cyan);
+      }
+
+      .btn-tech {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 28px;
+        font-family: var(--bp-mono);
+        font-size: 12px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #f1f5f9;
+        border: 1px solid rgba(148, 163, 184, 0.55);
+        background: rgba(30, 41, 59, 0.35);
+        transition: border-color 200ms ease, background 200ms ease, color 200ms ease;
+      }
+      .btn-tech:hover {
+        border-color: var(--bp-cyan);
+        background: rgba(34, 211, 238, 0.08);
+        color: #ecfeff;
+      }
+      .btn-tech::before,
+      .btn-tech::after {
+        content: "";
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-color: var(--bp-cyan);
+        opacity: 0;
+        transition: opacity 200ms ease;
+      }
+      .btn-tech::before {
+        top: -1px;
+        left: -1px;
+        border-top: 1px solid;
+        border-left: 1px solid;
+      }
+      .btn-tech::after {
+        bottom: -1px;
+        right: -1px;
+        border-bottom: 1px solid;
+        border-right: 1px solid;
+      }
+      .btn-tech:hover::before,
+      .btn-tech:hover::after {
+        opacity: 1;
+      }
+      .btn-tech.btn-ghost {
+        background: transparent;
+        color: rgba(203, 213, 225, 0.92);
+        border-color: rgba(100, 116, 139, 0.55);
+      }
+
+      .step-card {
+        position: relative;
+        padding-left: 28px !important;
+      }
+      .step-card::before {
+        content: "";
+        position: absolute;
+        left: 6px;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background-image: repeating-linear-gradient(
+          to bottom,
+          rgba(148, 163, 184, 0.4) 0 6px,
+          transparent 6px 12px
+        );
+      }
+      .step-card::after {
+        content: "";
+        position: absolute;
+        left: 1px;
+        top: 36px;
+        width: 11px;
+        height: 11px;
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        background: #0b0f16;
+        transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+      }
+      .step-card.active::after {
+        background: var(--bp-cyan);
+        border-color: var(--bp-cyan);
       }
 
       .step-card.active {
@@ -49,15 +342,78 @@
         filter: saturate(0.65) brightness(0.75);
       }
 
+      .step-kicker {
+        font-family: var(--bp-mono);
+        font-size: 11px;
+        letter-spacing: 0.22em;
+      }
+      .step-kicker .bracket {
+        color: rgba(34, 211, 238, 0.85);
+      }
+
+      .step-title {
+        font-size: clamp(2rem, 3.4vw, 3.2rem);
+        line-height: 1.08;
+        letter-spacing: -0.01em;
+      }
+
+      .step-body {
+        font-size: clamp(1.02rem, 1.35vw, 1.22rem);
+        line-height: 1.55;
+      }
+
+      .toc-link {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        font-family: var(--bp-mono);
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        border-left: 2px solid transparent;
+        border-radius: 0;
+      }
+      .toc-link .toc-num {
+        color: rgba(148, 163, 184, 0.7);
+        font-size: 10.5px;
+      }
       .toc-link.active {
-        border-color: rgba(148, 163, 184, 0.9);
+        border-left-color: var(--bp-cyan);
         color: #f1f5f9;
-        background: rgba(30, 41, 59, 0.6);
+        background: rgba(30, 41, 59, 0.55);
+      }
+      .toc-link.active .toc-num {
+        color: var(--bp-cyan);
       }
 
       .info-card {
+        position: relative;
         border: 1px solid rgba(100, 116, 139, 0.45);
         background: rgba(15, 23, 42, 0.42);
+      }
+      .info-card::before,
+      .info-card::after {
+        content: "";
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-color: rgba(148, 163, 184, 0.55);
+        transition: border-color 220ms ease;
+      }
+      .info-card::before {
+        top: -1px;
+        left: -1px;
+        border-top: 1px solid;
+        border-left: 1px solid;
+      }
+      .info-card::after {
+        bottom: -1px;
+        right: -1px;
+        border-bottom: 1px solid;
+        border-right: 1px solid;
+      }
+      .info-card:hover::before,
+      .info-card:hover::after {
+        border-color: var(--bp-cyan);
       }
 
       .tech-panel {
@@ -70,70 +426,346 @@
         position: absolute;
         inset: 0;
         pointer-events: none;
-        background:
-          linear-gradient(rgba(34, 211, 238, 0.08) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(34, 211, 238, 0.08) 1px, transparent 1px);
+        background-image:
+          linear-gradient(rgba(34, 211, 238, 0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(34, 211, 238, 0.05) 1px, transparent 1px);
         background-size: 24px 24px;
-        opacity: 0.55;
+        opacity: 0.7;
       }
 
       .tech-panel::after {
-        content: "";
+        content: attr(data-stamp);
         position: absolute;
-        inset: -30% -20% auto auto;
-        width: 200px;
-        height: 200px;
-        border-radius: 999px;
-        background: radial-gradient(circle, rgba(34, 211, 238, 0.2), transparent 65%);
-        filter: blur(8px);
+        right: 14px;
+        bottom: 14px;
+        font-family: var(--bp-mono);
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        color: rgba(34, 211, 238, 0.65);
+        border: 1px solid rgba(34, 211, 238, 0.45);
+        padding: 3px 8px;
         pointer-events: none;
       }
 
       .tech-line {
+        position: relative;
+        height: 6px;
+      }
+      .tech-line::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
         height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.75), transparent);
+        background: rgba(148, 163, 184, 0.4);
+      }
+      .tech-line::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-image: repeating-linear-gradient(
+          to right,
+          rgba(148, 163, 184, 0.55) 0 1px,
+          transparent 1px 32px
+        );
       }
 
-      .step-kicker {
-        font-size: 0.78rem;
-        letter-spacing: 0.24em;
+      .hud-panel {
+        position: relative;
+        background: rgba(11, 15, 22, 0.78);
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        padding: 12px 14px;
+        backdrop-filter: blur(2px);
+      }
+      .hud-panel .hud-row + .hud-row {
+        margin-top: 8px;
+      }
+      .hud-panel-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 12px;
+      }
+      .hud-panel-grid .hud-row + .hud-row {
+        margin-top: 0;
       }
 
-      .step-title {
-        font-size: clamp(2rem, 3.4vw, 3.2rem);
-        line-height: 1.08;
-        letter-spacing: -0.01em;
-        text-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.08),
-          0 12px 24px rgba(2, 6, 23, 0.38);
+      .hud-row label {
+        display: block;
+        font-family: var(--bp-mono);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        color: rgba(148, 163, 184, 0.85);
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+      .hud-row select {
+        width: 100%;
+        font-family: var(--bp-mono);
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #e2e8f0;
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        border-radius: 0;
+        padding: 8px 10px;
+        outline: none;
+        transition: border-color 200ms ease;
+      }
+      .hud-row select:focus,
+      .hud-row select:hover {
+        border-color: var(--bp-cyan);
       }
 
-      .step-body {
-        font-size: clamp(1.02rem, 1.35vw, 1.22rem);
-        line-height: 1.55;
-        text-shadow: 0 8px 16px rgba(2, 6, 23, 0.3);
+      .hud-toolbar .hud-row {
+        background: rgba(11, 15, 22, 0.6);
+        border: 1px solid rgba(148, 163, 184, 0.3);
+        padding: 10px 12px;
       }
 
-      .step-copy {
-        transform: perspective(900px) rotateX(2.4deg) translateZ(0);
-        transform-origin: 50% 70%;
+      .hud-header {
+        position: absolute;
+        left: 16px;
+        top: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--bp-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.2em;
+        color: rgba(226, 232, 240, 0.85);
+        text-transform: uppercase;
+        background: rgba(11, 15, 22, 0.78);
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        padding: 6px 10px;
+      }
+      .hud-header .scan-bar {
+        position: relative;
+        width: 96px;
+        height: 4px;
+        background: rgba(148, 163, 184, 0.18);
+        overflow: hidden;
+      }
+      .hud-header .scan-bar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 28px;
+        background: linear-gradient(90deg, transparent, var(--bp-cyan), transparent);
+        animation: hudScan 1.6s linear infinite;
+      }
+      .hud-header .scan-bar::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: repeating-linear-gradient(
+          to right,
+          rgba(148, 163, 184, 0.45) 0 1px,
+          transparent 1px 12px
+        );
+      }
+      @keyframes hudScan {
+        0% { transform: translateX(-32px); }
+        100% { transform: translateX(96px); }
       }
 
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--bp-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(226, 232, 240, 0.92);
+        background: rgba(11, 15, 22, 0.78);
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        padding: 6px 10px;
+      }
+      .status-pill .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.7);
+      }
+      .status-pill.is-loading .dot {
+        background: var(--bp-cyan);
+        animation: pulseDot 1.2s ease-in-out infinite;
+      }
+      .status-pill.is-ready .dot {
+        background: #22c55e;
+        border-color: #22c55e;
+      }
+      @keyframes pulseDot {
+        0%, 100% { opacity: 0.45; }
+        50% { opacity: 1; }
+      }
+
+      .form-field {
+        position: relative;
+        display: block;
+      }
+      .form-field .field-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-family: var(--bp-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(148, 163, 184, 0.85);
+        margin-bottom: 6px;
+      }
+      .form-field .field-label .field-num {
+        color: var(--bp-cyan);
+      }
+      .form-field input,
+      .form-field textarea {
+        width: 100%;
+        font-family: var(--bp-mono);
+        font-size: 13px;
+        letter-spacing: 0.04em;
+        color: #f1f5f9;
+        background: rgba(11, 15, 22, 0.7);
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        border-radius: 0;
+        padding: 12px 14px;
+        outline: none;
+        transition: border-color 200ms ease;
+      }
+      .form-field textarea {
+        min-height: 7rem;
+        resize: vertical;
+      }
+      .form-field input::placeholder,
+      .form-field textarea::placeholder {
+        color: rgba(148, 163, 184, 0.55);
+      }
+      .form-field input:focus,
+      .form-field textarea:focus {
+        border-color: var(--bp-cyan);
+      }
+      .form-field .field-rule {
+        margin-top: 6px;
+        height: 1px;
+        background-image: repeating-linear-gradient(
+          to right,
+          rgba(148, 163, 184, 0.35) 0 4px,
+          transparent 4px 8px
+        );
+      }
+
+      .pictogram {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        color: rgba(34, 211, 238, 0.85);
+      }
+
+      .brand-logo {
+        height: 52px;
+        width: auto;
+        object-fit: contain;
+        opacity: 0.9;
+      }
+      .brand-logo-soft {
+        height: 28px;
+        opacity: 0.72;
+      }
+      .brand-logo-stamp {
+        height: 24px;
+        opacity: 0.82;
+      }
+      .brand-logo-hero {
+        position: absolute;
+        left: 50%;
+        top: clamp(26px, 3.6vw, 44px);
+        transform: translateX(-50%);
+        z-index: 3;
+      }
+
+      .title-stamp {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        font-family: var(--bp-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(203, 213, 225, 0.85);
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        background: rgba(11, 15, 22, 0.65);
+      }
+      .title-stamp > div {
+        padding: 14px 16px;
+        border-right: 1px solid rgba(148, 163, 184, 0.35);
+      }
+      .title-stamp > div:last-child {
+        border-right: 0;
+      }
+      .title-stamp .ts-key {
+        color: rgba(148, 163, 184, 0.7);
+        font-size: 9.5px;
+        letter-spacing: 0.22em;
+        margin-bottom: 4px;
+      }
+      .title-stamp .ts-val {
+        color: #e2e8f0;
+      }
+
+      .scroll-progress {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 1px;
+        width: 0;
+        background: var(--bp-cyan);
+        z-index: 50;
+        pointer-events: none;
+        transition: width 80ms linear;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .hud-header .scan-bar::before,
+        .status-pill.is-loading .dot {
+          animation: none;
+        }
+        .scroll-progress {
+          transition: none;
+        }
+        .frame-corners::before,
+        .frame-corners::after,
+        .frame-corners > .fc-tr,
+        .frame-corners > .fc-bl,
+        .info-card::before,
+        .info-card::after,
+        .btn-tech,
+        .btn-tech::before,
+        .btn-tech::after {
+          transition: none;
+        }
+      }
     </style>
   </head>
   <body class="text-slate-100 antialiased">
-    <div class="fixed inset-0 -z-10 grid-overlay opacity-20"></div>
+    <div class="blueprint-bg" aria-hidden="true"></div>
+    <div id="scrollProgress" class="scroll-progress" aria-hidden="true"></div>
 
-    <header class="relative mx-auto max-w-7xl bg-slate-950/45 px-6 pb-24 pt-10 md:px-10 lg:px-12 lg:pb-32 lg:pt-16">
-      <div class="flex items-center justify-between">
-        <div class="text-xs tracking-[0.35em] text-slate-300 md:text-sm">DIGITAL SURVEY LAB</div>
-        <div class="rounded-full border border-slate-500/40 px-4 py-2 text-[11px] tracking-[0.2em] text-slate-300">
-          LOD 400 READY
+    <header class="frame-corners relative mx-auto max-w-7xl bg-slate-950/45 px-6 pb-24 pt-10 md:px-10 lg:px-12 lg:pb-32 lg:pt-16">
+      <span class="fc-tr"></span><span class="fc-bl"></span>
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <img class="brand-logo brand-logo-hero" src="./лого ГеоВектор белый.png" alt="ГеоВектор" />
+          <span class="tech-tag">S-00 · Title Block · Digital Survey Lab</span>
         </div>
+        <span class="tech-tag mono" aria-label="Версия документа">Sheet 01 / 09 · Rev A · 2026</span>
       </div>
-      <section class="mt-14 grid gap-10 lg:grid-cols-1 lg:items-end">
-        <div class="mx-auto max-w-4xl text-center">
-          <p class="mb-6 text-sm uppercase tracking-[0.3em] text-slate-400">BIM + Laser Scanning</p>
+      <section class="mt-24 grid gap-10 lg:grid-cols-1 lg:items-end">
+        <div class="mx-auto mt-8 max-w-4xl text-center">
           <h1 class="text-4xl font-semibold leading-tight md:text-6xl lg:text-7xl">
             ОЦИФРОВКА<br />
             РЕАЛЬНОСТИ
@@ -143,17 +775,11 @@
             до уровня детализации LOD 400.
           </p>
           <div class="mt-9 flex flex-wrap justify-center gap-3">
-            <a
-              href="#cta"
-              class="inline-flex items-center gap-3 rounded-md border border-slate-500/60 bg-slate-800/40 px-7 py-4 text-sm font-medium uppercase tracking-[0.2em] text-slate-100 transition hover:bg-slate-700/50"
-            >
+            <a href="#cta" class="btn-tech">
               Обсудить проект
-              <span aria-hidden="true">→</span>
+              <span aria-hidden="true">[→]</span>
             </a>
-            <a
-              href="./test.html"
-              class="inline-flex items-center gap-3 rounded-md border border-slate-700/70 bg-transparent px-7 py-4 text-sm font-medium uppercase tracking-[0.2em] text-slate-300 transition hover:bg-slate-800/35"
-            >
+            <a href="./test.html" class="btn-tech btn-ghost">
               Test-страница
             </a>
           </div>
@@ -163,10 +789,17 @@
 
     <main>
       <section id="scrolly" class="relative bg-slate-950/45 py-16 md:py-24">
-        <div class="mx-auto grid max-w-7xl gap-10 px-6 md:px-10 lg:grid-cols-[1fr_1fr] lg:px-12">
-          <div class="space-y-20 pb-12 lg:pr-8">
+        <div class="mx-auto max-w-7xl px-6 md:px-10 lg:px-12">
+          <div class="mb-10 flex flex-wrap items-center justify-between gap-4">
+            <span class="tech-tag">S-01 · Pipeline · Scan-to-BIM</span>
+            <span class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-400">Lod 200 → 300 → 400</span>
+          </div>
+          <div class="rule-line" aria-hidden="true"></div>
+        </div>
+        <div class="mx-auto grid max-w-7xl gap-10 px-6 pt-16 md:px-10 lg:grid-cols-[1fr_1fr] lg:px-12">
+          <div class="mt-6 space-y-20 pb-12 lg:pr-8">
             <article class="step-card flex min-h-[44vh] flex-col justify-center p-2 transition md:p-4" data-step="0">
-              <p class="step-kicker text-xs uppercase tracking-[0.24em] text-slate-400">01. Позиционирование на рынке</p>
+              <p class="step-kicker uppercase text-slate-400"><span class="bracket">[</span> 01 / 04 <span class="bracket">]</span> · Позиционирование на рынке</p>
               <div class="step-copy">
                 <h2 class="step-title mt-4 font-semibold">Точность до 2 мм</h2>
                 <p class="step-body mt-3 max-w-xl text-slate-300">Лазерное сканирование и инженерная геодезия.</p>
@@ -174,7 +807,7 @@
             </article>
 
             <article class="step-card flex min-h-[44vh] flex-col justify-center p-2 transition md:p-4" data-step="1">
-              <p class="step-kicker text-xs uppercase tracking-[0.24em] text-slate-400">02. Производственная экспертиза</p>
+              <p class="step-kicker uppercase text-slate-400"><span class="bracket">[</span> 02 / 04 <span class="bracket">]</span> · Производственная экспертиза</p>
               <div class="step-copy">
                 <h2 class="step-title mt-4 font-semibold">LOD 300/400 без потерь</h2>
                 <p class="step-body mt-3 max-w-xl text-slate-300">Полный цикл: облако точек → BIM → РД.</p>
@@ -182,7 +815,7 @@
             </article>
 
             <article class="step-card flex min-h-[44vh] flex-col justify-center p-2 transition md:p-4" data-step="2">
-              <p class="step-kicker text-xs uppercase tracking-[0.24em] text-slate-400">03. Достижения команды</p>
+              <p class="step-kicker uppercase text-slate-400"><span class="bracket">[</span> 03 / 04 <span class="bracket">]</span> · Достижения команды</p>
               <div class="step-copy">
                 <h2 class="step-title mt-4 font-semibold">120+ объектов</h2>
                 <p class="step-body mt-3 max-w-xl text-slate-300">Промышленные, гражданские и инфраструктурные проекты.</p>
@@ -190,7 +823,7 @@
             </article>
 
             <article class="step-card flex min-h-[44vh] flex-col justify-center p-2 transition md:p-4" data-step="3">
-              <p class="step-kicker text-xs uppercase tracking-[0.24em] text-slate-400">04. Широкий профиль</p>
+              <p class="step-kicker uppercase text-slate-400"><span class="bracket">[</span> 04 / 04 <span class="bracket">]</span> · Широкий профиль</p>
               <div class="step-copy">
                 <h2 class="step-title mt-4 font-semibold">BIM + геодезия + стройконтроль</h2>
                 <p class="step-body mt-3 max-w-xl text-slate-300">Единый подрядчик на весь цикл объекта.</p>
@@ -201,50 +834,47 @@
           <div class="lg:relative overflow-visible">
             <div class="top-0 h-[100vh] lg:sticky">
               <div class="relative -mx-10 h-[112%] w-[calc(100%+5rem)] -translate-y-[6%] bg-transparent md:-mx-12 md:w-[calc(100%+6rem)] lg:-mx-16 lg:w-[calc(100%+8rem)]">
-                <canvas id="sceneCanvas" class="h-full w-full"></canvas>
-                <div class="pointer-events-none absolute left-4 top-4 rounded bg-slate-900/80 px-3 py-2 text-[11px] tracking-[0.2em] text-slate-200">
-                  MESH_WEB_350K.PLY
+                <canvas id="sceneCanvas" class="h-full w-full translate-y-6"></canvas>
+                <div class="hud-header">
+                  <span id="hudFile">MESH_WEB_350K.PLY</span>
+                  <span class="scan-bar" aria-hidden="true"></span>
                 </div>
-                <div class="absolute right-4 top-4">
-                  <label class="sr-only" for="modelPreset">Модель</label>
-                  <select
-                    id="modelPreset"
-                    class="mb-2 block w-full rounded border border-slate-600 bg-slate-900/85 px-3 py-2 text-[11px] uppercase tracking-[0.14em] text-slate-200"
-                  >
-                    <option value="besedka">Беседка</option>
-                    <option value="mesh">BIM model</option>
-                  </select>
-                  <label class="sr-only" for="qualityPreset">Качество модели</label>
-                  <select
-                    id="qualityPreset"
-                    class="rounded border border-slate-600 bg-slate-900/85 px-3 py-2 text-[11px] uppercase tracking-[0.14em] text-slate-200"
-                  >
-                    <option value="100k">100k points</option>
-                    <option value="1m">1M points</option>
-                  </select>
-                  <label class="sr-only" for="chaosPreset">Стартовая форма</label>
-                  <select
-                    id="chaosPreset"
-                    class="mt-2 block w-full rounded border border-slate-600 bg-slate-900/85 px-3 py-2 text-[11px] uppercase tracking-[0.14em] text-slate-200"
-                  >
-                    <option value="sphere">Sphere</option>
-                    <option value="infinity">Infinity</option>
-                    <option value="wind">Wind flow</option>
-                    <option value="tachymeter">Tachymeter</option>
-                  </select>
+                <div class="frame-corners hud-panel hud-panel-grid absolute right-4 top-4 w-[340px] max-w-[calc(100%-2rem)]">
+                  <span class="fc-tr"></span><span class="fc-bl"></span>
+                  <div class="hud-row">
+                    <label for="modelPreset">Модель</label>
+                    <select id="modelPreset">
+                      <option value="besedka">Беседка</option>
+                      <option value="mesh">BIM model</option>
+                    </select>
+                  </div>
+                  <div class="hud-row">
+                    <label for="qualityPreset">Качество</label>
+                    <select id="qualityPreset">
+                      <option value="100k">100k points</option>
+                      <option value="1m">1M points</option>
+                    </select>
+                  </div>
+                  <div class="hud-row">
+                    <label for="chaosPreset">Стартовая форма</label>
+                    <select id="chaosPreset">
+                      <option value="sphere">Sphere</option>
+                      <option value="infinity">Infinity</option>
+                      <option value="wind">Wind flow</option>
+                      <option value="tachymeter">Tachymeter</option>
+                    </select>
+                  </div>
+                  <div class="hud-row">
+                    <label for="stylePreset">Стиль финала</label>
+                    <select id="stylePreset">
+                      <option value="original">Original style</option>
+                      <option value="grid">Grid style</option>
+                    </select>
+                  </div>
                 </div>
-                <div id="modelStatus" class="pointer-events-none absolute bottom-4 left-4 rounded bg-slate-900/75 px-3 py-2 text-[11px] tracking-[0.16em] text-slate-200">
-                  Загрузка модели...
-                </div>
-                <div class="absolute bottom-4 right-4">
-                  <label class="sr-only" for="stylePreset">Стиль финала</label>
-                  <select
-                    id="stylePreset"
-                    class="rounded border border-slate-600 bg-slate-900/85 px-3 py-2 text-[11px] uppercase tracking-[0.14em] text-slate-200"
-                  >
-                    <option value="original">Original style</option>
-                    <option value="grid">Grid style</option>
-                  </select>
+                <div id="modelStatus" class="status-pill is-loading pointer-events-none absolute bottom-4 left-4 translate-y-6">
+                  <span class="dot" aria-hidden="true"></span>
+                  <span class="status-text">Загрузка модели...</span>
                 </div>
               </div>
             </div>
@@ -252,216 +882,294 @@
         </div>
       </section>
 
-      <section id="insights" class="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:px-10 lg:grid-cols-[320px_1fr] lg:gap-14 lg:px-12 lg:py-20">
-        <aside class="lg:sticky lg:top-6 lg:self-start">
-          <div class="rounded-2xl border border-slate-700/70 bg-slate-900/45 p-5">
-            <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Экспертный профиль</p>
-            <nav class="mt-4 space-y-2 text-sm">
-              <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#insight-s1">BIM-экспертиза 2025</a>
-              <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#insight-s2">Форматы и IFC4</a>
-              <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#insight-s3">LOD и требования</a>
-              <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#insight-s4">Подготовка к сдаче</a>
-              <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#insight-s5">Артефакты BIM-комплекта</a>
-              <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#insight-s6">5D-смета и контроль</a>
-              <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#insight-s7">Типовые ошибки</a>
-              <a class="toc-link block rounded-md border border-transparent px-3 py-2 text-slate-400 transition" href="#insight-s8">Итоговая экспертиза</a>
-            </nav>
-          </div>
-        </aside>
-
-        <article class="space-y-8">
-          <section id="insight-s1" class="rounded-2xl border border-slate-700/70 bg-slate-900/35 p-8">
-            <p class="text-xs uppercase tracking-[0.22em] text-slate-400">Экспертная компетенция компании</p>
-            <h3 class="mt-3 text-3xl font-semibold leading-tight md:text-4xl">BIM-экспертиза в 2025: практический стандарт нашей команды</h3>
-            <p class="mt-4 text-slate-300">Мы ведём проекты в логике цифровой экспертизы: проверяем не только листы, а целостность ЦИМ — геометрию, атрибуты, иерархию, коллизии и связность решений между дисциплинами.</p>
-            <p class="mt-3 text-slate-300">Такой подход сокращает цикл согласований, снижает количество замечаний и повышает предсказуемость сроков на этапе строительства.</p>
-          </section>
-
-          <section id="insight-s2" class="tech-panel rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
-            <h3 class="text-2xl font-semibold">Форматы и IFC4: как мы обеспечиваем совместимость</h3>
-            <p class="mt-4 text-slate-300">Основной формат выдачи — IFC4. Параллельно сохраняем нативные модели (RVT/PLN) для глубокой технической проверки и быстрого уточнения спорных мест.</p>
-            <div class="tech-line mt-5 w-full"></div>
-            <div class="mt-5 grid gap-3 md:grid-cols-3">
-              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300"><strong>IFC4:</strong> обязательный обменный формат для экспертизы.</p></div>
-              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300"><strong>RVT/PLN:</strong> исходник для детального инженерного контроля.</p></div>
-              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300"><strong>PDF/Excel:</strong> листы, спецификации, ведомости из модели.</p></div>
-            </div>
-          </section>
-
-          <section id="insight-s3" class="rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
-            <h3 class="text-2xl font-semibold">LOD и глубина проработки: где мы держим инженерный баланс</h3>
-            <p class="mt-4 text-slate-300">Для проектной стадии мы ведём модель на уровне LOD 300, а по узловым зонам поднимаем до LOD 350/400, когда это действительно влияет на координацию и стоимость.</p>
-            <ul class="mt-4 space-y-2 text-slate-300">
-              <li>• LOD 200 — недостаточно для надёжной проверки;</li>
-              <li>• LOD 300 — рабочий минимум для экспертизы ПД;</li>
-              <li>• LOD 400 — целевой уровень для сложных производственных узлов.</li>
-            </ul>
-          </section>
-
-          <section id="insight-s4" class="rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
-            <h3 class="text-2xl font-semibold">Подготовка модели перед подачей: наш регламент качества</h3>
-            <ol class="mt-4 space-y-2 text-slate-300">
-              <li>1. Clash-detection по дисциплинам (АР, КР, ОВ, ВК, ЭОМ).</li>
-              <li>2. Валидация атрибутов: материалы, марки, параметры систем.</li>
-              <li>3. Контроль IFC-экспорта и повторная проверка в независимом viewer.</li>
-              <li>4. Синхронная выгрузка листов, спецификаций и ведомостей из актуальной модели.</li>
-            </ol>
-          </section>
-
-          <section id="insight-s5" class="tech-panel rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
-            <h3 class="text-2xl font-semibold">Артефакты BIM-комплекта: что получает заказчик и экспертиза</h3>
-            <div class="mt-4 grid gap-3 md:grid-cols-2">
-              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300">IFC4-модель с валидной структурой и атрибутами.</p></div>
-              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300">Планы, разрезы, фасады и схемы из актуальной ЦИМ.</p></div>
-              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300">Спецификации и ведомости объёмов из модели.</p></div>
-              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300">Сметные выгрузки и отчёты коллизий для защиты решений.</p></div>
-            </div>
-            <div class="tech-line mt-6 w-full"></div>
-          </section>
-
-          <section id="insight-s6" class="rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
-            <h3 class="text-2xl font-semibold">5D-смета и контроль бюджета</h3>
-            <p class="mt-4 text-slate-300">Мы связываем сметные позиции с элементами модели, чтобы количество работ обновлялось автоматически при изменениях в проекте.</p>
-            <p class="mt-3 text-slate-300">Это снижает риски расхождений между проектом, сметой и фактическим выполнением на стройке.</p>
-          </section>
-
-          <section id="insight-s7" class="rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
-            <h3 class="text-2xl font-semibold">Типовые ошибки, которые мы снимаем до экспертизы</h3>
-            <ul class="mt-4 space-y-2 text-slate-300">
-              <li>• конфликт инженерных систем с конструкциями;</li>
-              <li>• дубли и разрывы элементов;</li>
-              <li>• неполные или формальные атрибуты;</li>
-              <li>• расхождения между моделью и листами.</li>
-            </ul>
-          </section>
-
-          <section id="insight-s8" class="tech-panel rounded-2xl border border-slate-700/60 bg-slate-900/30 p-8">
-            <h3 class="text-2xl font-semibold">Итоговая экспертиза: чем сильна наша команда</h3>
-            <p class="mt-4 text-slate-300">Мы объединяем BIM-моделирование, геодезию, стройконтроль и инженерную экспертизу в одном контуре, чтобы проект проходил путь от данных к реализации без потери качества.</p>
-            <div class="mt-6 grid gap-3 md:grid-cols-3">
-              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300">Цифровая координация разделов</p></div>
-              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300">Геодезический контроль на площадке</p></div>
-              <div class="info-card rounded-lg p-4"><p class="text-sm text-slate-300">Прозрачная 5D-экономика проекта</p></div>
-            </div>
-            <a href="#cta" class="mt-6 inline-flex rounded-md border border-slate-500/70 bg-slate-800/40 px-5 py-3 text-xs uppercase tracking-[0.18em] text-slate-100">
-              Обсудить задачу
-            </a>
-          </section>
-        </article>
-      </section>
-
-      <section class="border-t border-slate-800/80 bg-slate-950/45 py-16 md:py-24">
+      <section id="insights" class="bg-slate-950 py-16 md:py-24 lg:py-28">
         <div class="mx-auto max-w-7xl px-6 md:px-10 lg:px-12">
-          <div class="grid gap-6">
-            <article class="rounded-2xl border border-slate-700/70 bg-slate-900/35 p-7">
-              <p class="text-xs uppercase tracking-[0.24em] text-slate-400">Программы и оборудование</p>
-              <h3 class="mt-3 text-3xl font-semibold md:text-4xl">Технологический стек в работе</h3>
-              <p class="mt-4 max-w-2xl text-sm text-slate-300">
-                Используем связку геодезических приборов, BIM-платформ и специализированных систем обработки облаков
-                точек, чтобы пройти путь от полевых измерений до проектной модели и отчёта по отклонениям.
-              </p>
-              <div class="mt-6 grid gap-3 md:grid-cols-3">
-                <div class="rounded-lg border border-slate-700/70 bg-slate-950/60 p-4">
-                  <p class="text-[11px] uppercase tracking-[0.18em] text-slate-400">Полевой этап</p>
-                  <p class="mt-2 text-sm text-slate-200">Съёмка, контроль и первичная сшивка</p>
-                </div>
-                <div class="rounded-lg border border-slate-700/70 bg-slate-950/60 p-4">
-                  <p class="text-[11px] uppercase tracking-[0.18em] text-slate-400">Офисный этап</p>
-                  <p class="mt-2 text-sm text-slate-200">Чистка, классификация и аналитика</p>
-                </div>
-                <div class="rounded-lg border border-slate-700/70 bg-slate-950/60 p-4">
-                  <p class="text-[11px] uppercase tracking-[0.18em] text-slate-400">BIM этап</p>
-                  <p class="mt-2 text-sm text-slate-200">Моделирование, документация и визуализация</p>
-                </div>
-              </div>
-            </article>
+          <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+            <span class="tech-tag">S-02 · BIM Expertise · Insights Sheet</span>
+            <span class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-400">8 модулей · IFC4 / РД / 5D</span>
           </div>
+          <div class="rule-line mb-10" aria-hidden="true"></div>
+          <div class="grid gap-10 lg:grid-cols-[320px_1fr] lg:gap-14">
+          <aside class="lg:sticky lg:top-6 lg:self-start">
+            <div class="frame-corners relative border border-slate-700/70 bg-slate-900/45 p-5">
+              <span class="fc-tr"></span><span class="fc-bl"></span>
+              <p class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-400">Экспертный профиль · Index</p>
+              <nav class="mt-4 space-y-1">
+                <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s1"><span class="toc-num mono">01</span><span>BIM-экспертиза 2025</span></a>
+                <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s2"><span class="toc-num mono">02</span><span>Форматы и IFC4</span></a>
+                <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s3"><span class="toc-num mono">03</span><span>LOD и требования</span></a>
+                <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s4"><span class="toc-num mono">04</span><span>Подготовка к сдаче</span></a>
+                <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s5"><span class="toc-num mono">05</span><span>Артефакты BIM-комплекта</span></a>
+                <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s6"><span class="toc-num mono">06</span><span>5D-смета и контроль</span></a>
+                <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s7"><span class="toc-num mono">07</span><span>Типовые ошибки</span></a>
+                <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s8"><span class="toc-num mono">08</span><span>Итоговая экспертиза</span></a>
+              </nav>
+            </div>
+          </aside>
 
-          <div class="mt-6 grid gap-6 lg:grid-cols-2">
-            <article class="rounded-2xl border border-slate-700/70 bg-slate-900/35 p-6">
-              <h4 class="text-xl font-semibold">Программное обеспечение</h4>
-              <div class="mt-5 space-y-4 text-sm text-slate-300">
-                <div class="rounded-lg border border-slate-700/60 bg-slate-950/55 p-4">
-                  <p class="text-xs uppercase tracking-[0.16em] text-slate-400">BIM и документация</p>
-                  <p class="mt-2">Autodesk AutoCAD, Autodesk Civil 3D, Autodesk Revit.</p>
-                </div>
-                <div class="rounded-lg border border-slate-700/60 bg-slate-950/55 p-4">
-                  <p class="text-xs uppercase tracking-[0.16em] text-slate-400">Облако точек</p>
-                  <p class="mt-2">Autodesk ReCAP, Trimble Perspective, Trimble RealWorks.</p>
-                </div>
-                <div class="rounded-lg border border-slate-700/60 bg-slate-950/55 p-4">
-                  <p class="text-xs uppercase tracking-[0.16em] text-slate-400">Контроль отклонений и визуализация</p>
-                  <p class="mt-2">Trimble Cyclone 3DR, Autodesk 3DS Max.</p>
-                </div>
-              </div>
-            </article>
+          <article class="space-y-8">
+            <section id="insight-s1" class="frame-corners relative border border-slate-700/70 bg-slate-900/35 p-8">
+              <span class="fc-tr"></span><span class="fc-bl"></span>
+              <span class="tech-tag mb-4">S-02.01 · Expertise core</span>
+              <h3 class="mt-3 text-3xl font-semibold leading-tight md:text-4xl">BIM-экспертиза в 2025: практический стандарт нашей команды</h3>
+              <p class="mt-4 text-slate-300">Мы ведём проекты в логике цифровой экспертизы: проверяем не только листы, а целостность ЦИМ — геометрию, атрибуты, иерархию, коллизии и связность решений между дисциплинами.</p>
+              <p class="mt-3 text-slate-300">Такой подход сокращает цикл согласований, снижает количество замечаний и повышает предсказуемость сроков на этапе строительства.</p>
+            </section>
 
-            <article class="rounded-2xl border border-slate-700/70 bg-slate-900/35 p-6">
-              <h4 class="text-xl font-semibold">Оборудование</h4>
-              <div class="mt-5 grid gap-3">
-                <div class="rounded-lg border border-slate-700/60 bg-slate-950/55 p-4">
-                  <p class="text-xs uppercase tracking-[0.16em] text-slate-400">Тахеометрия</p>
-                  <p class="mt-2 text-sm text-slate-300">TS07i, TS16.</p>
-                </div>
-                <div class="rounded-lg border border-slate-700/60 bg-slate-950/55 p-4">
-                  <p class="text-xs uppercase tracking-[0.16em] text-slate-400">Лазерное сканирование</p>
-                  <p class="mt-2 text-sm text-slate-300">Trimble X7, Leica P50, CX12, SLAM-решения.</p>
-                </div>
-                <div class="rounded-lg border border-slate-700/60 bg-slate-950/55 p-4">
-                  <p class="text-xs uppercase tracking-[0.16em] text-slate-400">Аэрофотосъёмка</p>
-                  <p class="mt-2 text-sm text-slate-300">Дроны, квадрокоптеры, БПЛА самолётного типа.</p>
-                </div>
+            <section id="insight-s2" class="tech-panel frame-corners relative border border-slate-700/60 bg-slate-900/30 p-8" data-stamp="// IFC4 · S-02.02">
+              <span class="fc-tr"></span><span class="fc-bl"></span>
+              <h3 class="text-2xl font-semibold">Форматы и IFC4: как мы обеспечиваем совместимость</h3>
+              <p class="mt-4 text-slate-300">Основной формат выдачи — IFC4. Параллельно сохраняем нативные модели (RVT/PLN) для глубокой технической проверки и быстрого уточнения спорных мест.</p>
+              <div class="tech-line mt-5 w-full"></div>
+              <div class="mt-5 grid gap-3 md:grid-cols-3">
+                <div class="info-card p-4"><p class="text-sm text-slate-300"><strong>IFC4:</strong> обязательный обменный формат для экспертизы.</p></div>
+                <div class="info-card p-4"><p class="text-sm text-slate-300"><strong>RVT/PLN:</strong> исходник для детального инженерного контроля.</p></div>
+                <div class="info-card p-4"><p class="text-sm text-slate-300"><strong>PDF/Excel:</strong> листы, спецификации, ведомости из модели.</p></div>
               </div>
-            </article>
+            </section>
+
+            <section id="insight-s3" class="frame-corners relative border border-slate-700/60 bg-slate-900/30 p-8">
+              <span class="fc-tr"></span><span class="fc-bl"></span>
+              <span class="tech-tag mb-4">S-02.03 · LOD balance</span>
+              <h3 class="mt-3 text-2xl font-semibold">LOD и глубина проработки: где мы держим инженерный баланс</h3>
+              <p class="mt-4 text-slate-300">Для проектной стадии мы ведём модель на уровне LOD 300, а по узловым зонам поднимаем до LOD 350/400, когда это действительно влияет на координацию и стоимость.</p>
+              <ul class="mt-4 space-y-2 text-slate-300">
+                <li>• LOD 200 — недостаточно для надёжной проверки;</li>
+                <li>• LOD 300 — рабочий минимум для экспертизы ПД;</li>
+                <li>• LOD 400 — целевой уровень для сложных производственных узлов.</li>
+              </ul>
+            </section>
+
+            <section id="insight-s4" class="frame-corners relative border border-slate-700/60 bg-slate-900/30 p-8">
+              <span class="fc-tr"></span><span class="fc-bl"></span>
+              <span class="tech-tag mb-4">S-02.04 · QC regulation</span>
+              <h3 class="mt-3 text-2xl font-semibold">Подготовка модели перед подачей: наш регламент качества</h3>
+              <ol class="mt-4 space-y-2 text-slate-300">
+                <li>1. Clash-detection по дисциплинам (АР, КР, ОВ, ВК, ЭОМ).</li>
+                <li>2. Валидация атрибутов: материалы, марки, параметры систем.</li>
+                <li>3. Контроль IFC-экспорта и повторная проверка в независимом viewer.</li>
+                <li>4. Синхронная выгрузка листов, спецификаций и ведомостей из актуальной модели.</li>
+              </ol>
+            </section>
+
+            <section id="insight-s5" class="tech-panel frame-corners relative border border-slate-700/60 bg-slate-900/30 p-8" data-stamp="// DELIVERABLES · S-02.05">
+              <span class="fc-tr"></span><span class="fc-bl"></span>
+              <h3 class="text-2xl font-semibold">Артефакты BIM-комплекта: что получает заказчик и экспертиза</h3>
+              <div class="mt-4 grid gap-3 md:grid-cols-2">
+                <div class="info-card p-4"><p class="text-sm text-slate-300">IFC4-модель с валидной структурой и атрибутами.</p></div>
+                <div class="info-card p-4"><p class="text-sm text-slate-300">Планы, разрезы, фасады и схемы из актуальной ЦИМ.</p></div>
+                <div class="info-card p-4"><p class="text-sm text-slate-300">Спецификации и ведомости объёмов из модели.</p></div>
+                <div class="info-card p-4"><p class="text-sm text-slate-300">Сметные выгрузки и отчёты коллизий для защиты решений.</p></div>
+              </div>
+              <div class="tech-line mt-6 w-full"></div>
+            </section>
+
+            <section id="insight-s6" class="frame-corners relative border border-slate-700/60 bg-slate-900/30 p-8">
+              <span class="fc-tr"></span><span class="fc-bl"></span>
+              <span class="tech-tag mb-4">S-02.06 · 5D control</span>
+              <h3 class="mt-3 text-2xl font-semibold">5D-смета и контроль бюджета</h3>
+              <p class="mt-4 text-slate-300">Мы связываем сметные позиции с элементами модели, чтобы количество работ обновлялось автоматически при изменениях в проекте.</p>
+              <p class="mt-3 text-slate-300">Это снижает риски расхождений между проектом, сметой и фактическим выполнением на стройке.</p>
+            </section>
+
+            <section id="insight-s7" class="frame-corners relative border border-slate-700/60 bg-slate-900/30 p-8">
+              <span class="fc-tr"></span><span class="fc-bl"></span>
+              <span class="tech-tag mb-4">S-02.07 · Common defects</span>
+              <h3 class="mt-3 text-2xl font-semibold">Типовые ошибки, которые мы снимаем до экспертизы</h3>
+              <ul class="mt-4 space-y-2 text-slate-300">
+                <li>• конфликт инженерных систем с конструкциями;</li>
+                <li>• дубли и разрывы элементов;</li>
+                <li>• неполные или формальные атрибуты;</li>
+                <li>• расхождения между моделью и листами.</li>
+              </ul>
+            </section>
+
+            <section id="insight-s8" class="tech-panel frame-corners relative border border-slate-700/60 bg-slate-900/30 p-8" data-stamp="// SUMMARY · S-02.08">
+              <span class="fc-tr"></span><span class="fc-bl"></span>
+              <h3 class="text-2xl font-semibold">Итоговая экспертиза: чем сильна наша команда</h3>
+              <p class="mt-4 text-slate-300">Мы объединяем BIM-моделирование, геодезию, стройконтроль и инженерную экспертизу в одном контуре, чтобы проект проходил путь от данных к реализации без потери качества.</p>
+              <div class="mt-6 grid gap-3 md:grid-cols-3">
+                <div class="info-card p-4"><p class="text-sm text-slate-300">Цифровая координация разделов</p></div>
+                <div class="info-card p-4"><p class="text-sm text-slate-300">Геодезический контроль на площадке</p></div>
+                <div class="info-card p-4"><p class="text-sm text-slate-300">Прозрачная 5D-экономика проекта</p></div>
+              </div>
+              <a href="#cta" class="btn-tech mt-6">Обсудить задачу <span aria-hidden="true">[→]</span></a>
+            </section>
+          </article>
           </div>
         </div>
       </section>
 
-      <section id="cta" class="border-t border-slate-800/80 bg-slate-950/45 py-16 md:py-24">
-        <div class="mx-auto grid max-w-7xl gap-8 px-6 md:px-10 lg:grid-cols-[1fr_1fr] lg:px-12">
-          <div>
-            <p class="text-xs uppercase tracking-[0.24em] text-slate-400">Инженерный опросник</p>
-            <h3 class="mt-3 text-3xl font-semibold md:text-4xl">Запрос на цифровую копию объекта</h3>
-            <p class="mt-5 max-w-lg text-sm text-slate-300">
-              Укажите тип объекта, цели BIM и ожидаемый уровень детализации. Подготовим техническое предложение
-              и дорожную карту проекта.
+      <section class="bg-slate-950 py-16 md:py-24 lg:py-28">
+        <div class="mx-auto max-w-7xl px-6 md:px-10 lg:px-12">
+          <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+            <span class="tech-tag">S-07 · Tech Stack · Hardware + Software</span>
+            <div class="flex items-center gap-3">
+              <span class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-400">Field → Office → BIM</span>
+              <img class="brand-logo-soft" src="./лого ГеоВектор белый.png" alt="ГеоВектор" />
+            </div>
+          </div>
+          <div class="rule-line mb-10" aria-hidden="true"></div>
+
+          <div class="max-w-3xl">
+            <p class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-400">Программы и оборудование</p>
+            <h3 class="mt-3 text-3xl font-semibold md:text-4xl">Технологический стек в работе</h3>
+            <p class="mt-4 text-sm text-slate-300 md:text-base">
+              Используем связку геодезических приборов, BIM-платформ и специализированных систем обработки облаков
+              точек — от полевых измерений до проектной модели и отчёта по отклонениям.
             </p>
           </div>
-          <form class="space-y-4 rounded-2xl border border-slate-700/70 bg-slate-900/40 p-6" action="#" method="post">
-            <label class="block text-sm">
-              <span class="mb-2 block text-slate-300">Тип объекта</span>
-              <input
-                class="w-full rounded-md border border-slate-600 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none ring-slate-400/70 placeholder:text-slate-500 focus:ring"
-                name="object"
-                placeholder="Завод, БЦ, жилой комплекс..."
-              />
-            </label>
-            <label class="block text-sm">
-              <span class="mb-2 block text-slate-300">Целевой уровень детализации</span>
-              <input
-                class="w-full rounded-md border border-slate-600 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none ring-slate-400/70 placeholder:text-slate-500 focus:ring"
-                name="lod"
-                placeholder="LOD 300 / LOD 400"
-              />
-            </label>
-            <label class="block text-sm">
-              <span class="mb-2 block text-slate-300">Ключевая задача</span>
-              <textarea
-                class="min-h-28 w-full rounded-md border border-slate-600 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none ring-slate-400/70 placeholder:text-slate-500 focus:ring"
-                name="goal"
-                placeholder="Координация инженерных систем, поиск коллизий, реверс-инжиниринг..."
-              ></textarea>
-            </label>
-            <button
-              type="submit"
-              class="w-full rounded-md border border-slate-500/70 bg-slate-800/40 px-5 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-slate-100 transition hover:bg-slate-700/55"
-            >
-              Отправить запрос
-            </button>
-          </form>
+
+          <div class="mt-12 grid gap-12 lg:grid-cols-2">
+            <div>
+              <div class="flex items-center gap-3">
+                <svg class="pictogram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18"/><path d="M3 9h18"/><path d="M9 9v12"/><path d="M3 15h6"/>
+                </svg>
+                <h4 class="text-xl font-semibold">Программное обеспечение</h4>
+              </div>
+              <div class="mt-5 divide-y divide-slate-800/80 border-y border-slate-800/80">
+                <div class="grid gap-1 py-4 md:grid-cols-[220px_1fr] md:gap-6">
+                  <p class="mono text-[10.5px] uppercase tracking-[0.18em] text-slate-400">BIM и документация</p>
+                  <p class="text-sm text-slate-200">Autodesk AutoCAD, Autodesk Civil 3D, Autodesk Revit.</p>
+                </div>
+                <div class="grid gap-1 py-4 md:grid-cols-[220px_1fr] md:gap-6">
+                  <p class="mono text-[10.5px] uppercase tracking-[0.18em] text-slate-400">Облако точек</p>
+                  <p class="text-sm text-slate-200">Autodesk ReCAP, Trimble Perspective, Trimble RealWorks.</p>
+                </div>
+                <div class="grid gap-1 py-4 md:grid-cols-[220px_1fr] md:gap-6">
+                  <p class="mono text-[10.5px] uppercase tracking-[0.18em] text-slate-400">Контроль и визуализация</p>
+                  <p class="text-sm text-slate-200">Trimble Cyclone 3DR, Autodesk 3DS Max.</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center gap-3">
+                <svg class="pictogram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square" aria-hidden="true">
+                  <circle cx="12" cy="10" r="4"/><path d="M12 14v7"/><path d="M8 21h8"/><path d="M12 3v3"/><path d="M3 10h3"/><path d="M18 10h3"/>
+                </svg>
+                <h4 class="text-xl font-semibold">Оборудование</h4>
+              </div>
+              <div class="mt-5 divide-y divide-slate-800/80 border-y border-slate-800/80">
+                <div class="grid gap-1 py-4 md:grid-cols-[220px_1fr] md:gap-6">
+                  <p class="mono text-[10.5px] uppercase tracking-[0.18em] text-slate-400">Тахеометрия</p>
+                  <p class="text-sm text-slate-200">TS07i, TS16.</p>
+                </div>
+                <div class="grid gap-1 py-4 md:grid-cols-[220px_1fr] md:gap-6">
+                  <p class="mono text-[10.5px] uppercase tracking-[0.18em] text-slate-400">Лазерное сканирование</p>
+                  <p class="text-sm text-slate-200">Trimble X7, Leica P50, CX12, SLAM-решения.</p>
+                </div>
+                <div class="grid gap-1 py-4 md:grid-cols-[220px_1fr] md:gap-6">
+                  <p class="mono text-[10.5px] uppercase tracking-[0.18em] text-slate-400">Аэрофотосъёмка</p>
+                  <p class="text-sm text-slate-200">Дроны, квадрокоптеры, БПЛА самолётного типа.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="cta" class="bg-slate-950/45 py-16 md:py-24">
+        <div class="mx-auto max-w-7xl px-6 md:px-10 lg:px-12">
+          <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+            <span class="tech-tag">S-08 · Engineering Brief · Request Form</span>
+            <span class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-400">Form-RQ-001 · Rev A</span>
+          </div>
+          <div class="rule-line mb-10" aria-hidden="true"></div>
+
+          <div class="grid gap-8 lg:grid-cols-[1fr_1fr]">
+            <div>
+              <p class="mono text-[10.5px] uppercase tracking-[0.22em] text-slate-400">Инженерный опросник</p>
+              <h3 class="mt-3 text-3xl font-semibold md:text-4xl">Запрос на цифровую копию объекта</h3>
+              <p class="mt-5 max-w-lg text-sm text-slate-300">
+                Укажите тип объекта, цели BIM и ожидаемый уровень детализации. Подготовим техническое предложение
+                и дорожную карту проекта.
+              </p>
+              <div class="mt-6 grid gap-3 max-w-md">
+                <div class="info-card p-3 mono text-[10.5px] uppercase tracking-[0.18em] text-slate-300">№ 01 — Тип объекта</div>
+                <div class="info-card p-3 mono text-[10.5px] uppercase tracking-[0.18em] text-slate-300">№ 02 — Целевой LOD</div>
+                <div class="info-card p-3 mono text-[10.5px] uppercase tracking-[0.18em] text-slate-300">№ 03 — Ключевая задача</div>
+              </div>
+            </div>
+            <form class="frame-corners relative border border-slate-700/70 bg-slate-900/40 p-6 space-y-5" action="#" method="post">
+              <span class="fc-tr"></span><span class="fc-bl"></span>
+              <label class="form-field" for="cta-object">
+                <span class="field-label"><span><span class="field-num">№ 01</span> · Тип объекта</span><span class="mono text-slate-500">char ≤ 120</span></span>
+                <input id="cta-object" name="object" placeholder="Завод, БЦ, жилой комплекс..." />
+                <span class="field-rule" aria-hidden="true"></span>
+              </label>
+              <label class="form-field" for="cta-lod">
+                <span class="field-label"><span><span class="field-num">№ 02</span> · Целевой уровень детализации</span><span class="mono text-slate-500">LOD 100–500</span></span>
+                <input id="cta-lod" name="lod" placeholder="LOD 300 / LOD 400" />
+                <span class="field-rule" aria-hidden="true"></span>
+              </label>
+              <label class="form-field" for="cta-goal">
+                <span class="field-label"><span><span class="field-num">№ 03</span> · Ключевая задача</span><span class="mono text-slate-500">free text</span></span>
+                <textarea id="cta-goal" name="goal" placeholder="Координация инженерных систем, поиск коллизий, реверс-инжиниринг..."></textarea>
+                <span class="field-rule" aria-hidden="true"></span>
+              </label>
+              <button type="submit" class="btn-tech w-full justify-center">
+                Отправить запрос <span aria-hidden="true">[→]</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="px-6 pb-12 md:px-10 lg:px-12" aria-label="Основная надпись">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-4 flex justify-end">
+            <img class="brand-logo-stamp" src="./лого ГеоВектор белый.png" alt="ГеоВектор" />
+          </div>
+          <div class="title-stamp">
+            <div>
+              <div class="ts-key">Шифр</div>
+              <div class="ts-val">DSL-LP-2026</div>
+            </div>
+            <div>
+              <div class="ts-key">Лист</div>
+              <div class="ts-val">01 / 01</div>
+            </div>
+            <div>
+              <div class="ts-key">Дата</div>
+              <div class="ts-val">2026 · Rev A</div>
+            </div>
+            <div>
+              <div class="ts-key">Масштаб</div>
+              <div class="ts-val">1 : 1 · WEB</div>
+            </div>
+          </div>
         </div>
       </section>
     </main>
+
+    <script>
+      (() => {
+        const bar = document.getElementById("scrollProgress");
+        if (!bar) return;
+        const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+        let raf = 0;
+        function update() {
+          raf = 0;
+          const doc = document.documentElement;
+          const max = doc.scrollHeight - window.innerHeight;
+          const pct = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+          bar.style.width = (pct * 100).toFixed(2) + "%";
+        }
+        function onScroll() {
+          if (reduced) {
+            update();
+            return;
+          }
+          if (raf) return;
+          raf = requestAnimationFrame(update);
+        }
+        update();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onScroll, { passive: true });
+      })();
+    </script>
 
     <script type="module">
       import * as THREE from "./vendor/three.module.js";
@@ -471,7 +1179,15 @@
 
       const canvas = document.getElementById("sceneCanvas");
       const modelStatus = document.getElementById("modelStatus");
-      const modelBadge = document.querySelector("#sceneCanvas + div");
+      const modelStatusText = modelStatus?.querySelector(".status-text");
+      const modelBadge = document.getElementById("hudFile");
+      function setModelStatus(text, mode) {
+        if (modelStatusText) modelStatusText.textContent = text;
+        if (modelStatus) {
+          modelStatus.classList.toggle("is-loading", mode === "loading");
+          modelStatus.classList.toggle("is-ready", mode === "ready");
+        }
+      }
       const modelPreset = document.getElementById("modelPreset");
       const qualityPreset = document.getElementById("qualityPreset");
       const chaosPreset = document.getElementById("chaosPreset");
@@ -874,7 +1590,7 @@
         noiseVec = noise.vectors;
         noisePhase = noise.phases;
 
-        if (modelStatus) modelStatus.textContent = `Модель загружена • ${pointCount.toLocaleString()} точек`;
+        setModelStatus(`Модель загружена • ${pointCount.toLocaleString()} точек`, "ready");
         if (modelBadge) modelBadge.textContent = getBadgeText();
         updateColorsIfNeeded(true);
         activateCard(0);
@@ -932,7 +1648,7 @@
 
       function onGeometryError(error, ticket) {
           if (ticket !== loadTicket) return;
-          if (modelStatus) modelStatus.textContent = "Ошибка PLY: fallback";
+          setModelStatus("Ошибка PLY: fallback", "loading");
           console.error("PLY load error:", error);
           const fallback = new THREE.TorusKnotGeometry(0.85, 0.25, 360, 36);
           const posAttr = fallback.getAttribute("position");
@@ -955,7 +1671,7 @@
         const source = getActiveSource();
         const primaryPath = source.presets[currentPreset] || source.presets["100k"];
         const fallbackChain = source.fallback || [];
-        if (modelStatus) modelStatus.textContent = "Загрузка модели...";
+        setModelStatus("Загрузка модели...", "loading");
         if (modelBadge) modelBadge.textContent = getBadgeText();
         loader.load(
           primaryPath,
