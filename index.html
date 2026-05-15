@@ -32,1020 +32,7 @@
     </script>
     <script src="./vendor/gsap.min.js"></script>
     <script src="./vendor/ScrollTrigger.min.js"></script>
-    <style>
-      :root {
-        color-scheme: dark;
-        --bp-line: rgba(148, 163, 184, 0.08);
-        --bp-line-major: rgba(148, 163, 184, 0.14);
-        --bp-edge: rgba(148, 163, 184, 0.22);
-        --bp-cyan: #22d3ee;
-        --bp-cyan-soft: rgba(34, 211, 238, 0.55);
-        --bp-mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
-      }
-
-      body {
-        background: #0b0f16;
-      }
-
-      .blueprint-bg {
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        z-index: -10;
-        background-color: #0b0f16;
-        background-image:
-          linear-gradient(var(--bp-line) 1px, transparent 1px),
-          linear-gradient(90deg, var(--bp-line) 1px, transparent 1px),
-          linear-gradient(var(--bp-line-major) 1px, transparent 1px),
-          linear-gradient(90deg, var(--bp-line-major) 1px, transparent 1px);
-        background-size: 16px 16px, 16px 16px, 128px 128px, 128px 128px;
-      }
-
-      .blueprint-bg::before,
-      .blueprint-bg::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 14px;
-        background-image: repeating-linear-gradient(
-          to bottom,
-          var(--bp-edge) 0 1px,
-          transparent 1px 32px
-        );
-        opacity: 0.55;
-      }
-      .blueprint-bg::before {
-        left: 0;
-      }
-      .blueprint-bg::after {
-        right: 0;
-      }
-
-      .mono {
-        font-family: var(--bp-mono);
-        font-feature-settings: "tnum", "ss01";
-      }
-
-      .frame-corners {
-        position: relative;
-      }
-      .frame-corners::before,
-      .frame-corners::after,
-      .frame-corners > .fc-tl,
-      .frame-corners > .fc-tr,
-      .frame-corners > .fc-bl,
-      .frame-corners > .fc-br {
-        pointer-events: none;
-      }
-      .frame-corners::before,
-      .frame-corners::after {
-        content: "";
-        position: absolute;
-        width: 14px;
-        height: 14px;
-        border-color: rgba(148, 163, 184, 0.8);
-        transition: border-color 220ms ease;
-      }
-      .frame-corners::before {
-        top: -1px;
-        left: -1px;
-        border-top: 1px solid;
-        border-left: 1px solid;
-      }
-      .frame-corners::after {
-        bottom: -1px;
-        right: -1px;
-        border-bottom: 1px solid;
-        border-right: 1px solid;
-      }
-      .frame-corners > .fc-tr,
-      .frame-corners > .fc-bl {
-        position: absolute;
-        width: 14px;
-        height: 14px;
-        border-color: rgba(148, 163, 184, 0.8);
-        transition: border-color 220ms ease;
-      }
-      .frame-corners > .fc-tr {
-        top: -1px;
-        right: -1px;
-        border-top: 1px solid;
-        border-right: 1px solid;
-      }
-      .frame-corners > .fc-bl {
-        bottom: -1px;
-        left: -1px;
-        border-bottom: 1px solid;
-        border-left: 1px solid;
-      }
-      .frame-corners:hover::before,
-      .frame-corners:hover::after,
-      .frame-corners:hover > .fc-tr,
-      .frame-corners:hover > .fc-bl {
-        border-color: var(--bp-cyan);
-      }
-
-      .tech-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 4px 10px;
-        font-family: var(--bp-mono);
-        font-size: 10.5px;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: rgba(203, 213, 225, 0.92);
-        border: 1px solid rgba(148, 163, 184, 0.45);
-        background: rgba(15, 23, 42, 0.5);
-      }
-      .tech-tag::before {
-        content: "";
-        width: 6px;
-        height: 6px;
-        background: var(--bp-cyan);
-        box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.25);
-      }
-
-      .rule-line {
-        position: relative;
-        height: 14px;
-      }
-      .rule-line::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 50%;
-        height: 1px;
-        background: rgba(148, 163, 184, 0.35);
-      }
-      .rule-line::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: calc(50% - 4px);
-        height: 4px;
-        background-image: repeating-linear-gradient(
-          to right,
-          rgba(148, 163, 184, 0.55) 0 1px,
-          transparent 1px 64px
-        );
-      }
-
-      .ruler-scale {
-        position: relative;
-        width: 240px;
-        height: 14px;
-        margin: 18px auto 0;
-      }
-      .ruler-scale::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 50%;
-        height: 1px;
-        background: rgba(148, 163, 184, 0.5);
-      }
-      .ruler-scale::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        background-image:
-          repeating-linear-gradient(
-            to right,
-            rgba(148, 163, 184, 0.6) 0 1px,
-            transparent 1px 8px
-          ),
-          repeating-linear-gradient(
-            to right,
-            rgba(148, 163, 184, 0.85) 0 1px,
-            transparent 1px 24px
-          );
-        background-size: 100% 6px, 100% 11px;
-        background-repeat: no-repeat;
-        background-position: center 8px, center 4px;
-      }
-
-      .chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 6px 12px;
-        font-family: var(--bp-mono);
-        font-size: 11px;
-        letter-spacing: 0.22em;
-        color: rgba(226, 232, 240, 0.92);
-        text-transform: uppercase;
-        border: 1px solid rgba(148, 163, 184, 0.45);
-        background: rgba(15, 23, 42, 0.55);
-        clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
-      }
-      .chip-num::before {
-        content: "";
-        width: 6px;
-        height: 6px;
-        border: 1px solid var(--bp-cyan);
-      }
-      .chip-num.is-on::before {
-        background: var(--bp-cyan);
-      }
-
-      .btn-tech {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 28px;
-        font-family: var(--bp-mono);
-        font-size: 12px;
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-        color: #f1f5f9;
-        border: 1px solid rgba(148, 163, 184, 0.55);
-        background: rgba(30, 41, 59, 0.35);
-        transition: border-color 200ms ease, background 200ms ease, color 200ms ease;
-      }
-      .btn-tech:hover {
-        border-color: var(--bp-cyan);
-        background: rgba(34, 211, 238, 0.08);
-        color: #ecfeff;
-      }
-      .btn-tech::before,
-      .btn-tech::after {
-        content: "";
-        position: absolute;
-        width: 8px;
-        height: 8px;
-        border-color: var(--bp-cyan);
-        opacity: 0;
-        transition: opacity 200ms ease;
-      }
-      .btn-tech::before {
-        top: -1px;
-        left: -1px;
-        border-top: 1px solid;
-        border-left: 1px solid;
-      }
-      .btn-tech::after {
-        bottom: -1px;
-        right: -1px;
-        border-bottom: 1px solid;
-        border-right: 1px solid;
-      }
-      .btn-tech:hover::before,
-      .btn-tech:hover::after {
-        opacity: 1;
-      }
-      .btn-tech.btn-ghost {
-        background: transparent;
-        color: rgba(203, 213, 225, 0.92);
-        border-color: rgba(100, 116, 139, 0.55);
-      }
-
-      .step-card {
-        position: relative;
-        padding-left: 28px !important;
-      }
-      .step-card::before {
-        content: "";
-        position: absolute;
-        left: 6px;
-        top: 0;
-        bottom: 0;
-        width: 1px;
-        background-image: repeating-linear-gradient(
-          to bottom,
-          rgba(148, 163, 184, 0.4) 0 6px,
-          transparent 6px 12px
-        );
-      }
-      .step-card::after {
-        content: "";
-        position: absolute;
-        left: 1px;
-        top: 36px;
-        width: 11px;
-        height: 11px;
-        border: 1px solid rgba(148, 163, 184, 0.6);
-        background: #0b0f16;
-        transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
-      }
-      .step-card.active::after {
-        background: var(--bp-cyan);
-        border-color: var(--bp-cyan);
-      }
-
-      .step-card.active {
-        opacity: 1;
-      }
-
-      .step-card.dimmed {
-        opacity: 0.16;
-        filter: saturate(0.65) brightness(0.75);
-      }
-
-      .step-kicker {
-        font-family: var(--bp-mono);
-        font-size: 11px;
-        letter-spacing: 0.22em;
-      }
-      .step-kicker .bracket {
-        color: rgba(34, 211, 238, 0.85);
-      }
-
-      .step-title {
-        font-size: clamp(2rem, 3.4vw, 3.2rem);
-        line-height: 1.08;
-        letter-spacing: -0.01em;
-      }
-
-      .step-body {
-        font-size: clamp(1.02rem, 1.35vw, 1.22rem);
-        line-height: 1.55;
-      }
-
-      .toc-link {
-        display: flex;
-        align-items: baseline;
-        gap: 10px;
-        font-family: var(--bp-mono);
-        font-size: 12px;
-        letter-spacing: 0.12em;
-        border-left: 2px solid transparent;
-        border-radius: 0;
-      }
-      .toc-link .toc-num {
-        color: rgba(148, 163, 184, 0.7);
-        font-size: 10.5px;
-      }
-      .toc-link.active {
-        border-left-color: var(--bp-cyan);
-        color: #f1f5f9;
-        background: rgba(30, 41, 59, 0.55);
-      }
-      .toc-link.active .toc-num {
-        color: var(--bp-cyan);
-      }
-
-      .info-card {
-        position: relative;
-        border: 1px solid rgba(100, 116, 139, 0.45);
-        background: rgba(15, 23, 42, 0.42);
-      }
-      .info-card::before,
-      .info-card::after {
-        content: "";
-        position: absolute;
-        width: 8px;
-        height: 8px;
-        border-color: rgba(148, 163, 184, 0.55);
-        transition: border-color 220ms ease;
-      }
-      .info-card::before {
-        top: -1px;
-        left: -1px;
-        border-top: 1px solid;
-        border-left: 1px solid;
-      }
-      .info-card::after {
-        bottom: -1px;
-        right: -1px;
-        border-bottom: 1px solid;
-        border-right: 1px solid;
-      }
-      .info-card:hover::before,
-      .info-card:hover::after {
-        border-color: var(--bp-cyan);
-      }
-
-      .tech-panel {
-        position: relative;
-        overflow: hidden;
-      }
-
-      .tech-panel::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background-image:
-          linear-gradient(rgba(34, 211, 238, 0.05) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(34, 211, 238, 0.05) 1px, transparent 1px);
-        background-size: 24px 24px;
-        opacity: 0.7;
-      }
-
-      .tech-panel::after {
-        content: attr(data-stamp);
-        position: absolute;
-        right: 14px;
-        bottom: 14px;
-        font-family: var(--bp-mono);
-        font-size: 10px;
-        letter-spacing: 0.2em;
-        color: rgba(34, 211, 238, 0.65);
-        border: 1px solid rgba(34, 211, 238, 0.45);
-        padding: 3px 8px;
-        pointer-events: none;
-      }
-
-      .tech-line {
-        position: relative;
-        height: 6px;
-      }
-      .tech-line::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 50%;
-        height: 1px;
-        background: rgba(148, 163, 184, 0.4);
-      }
-      .tech-line::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        background-image: repeating-linear-gradient(
-          to right,
-          rgba(148, 163, 184, 0.55) 0 1px,
-          transparent 1px 32px
-        );
-      }
-
-      .hud-panel {
-        position: relative;
-        background: rgba(11, 15, 22, 0.78);
-        border: 1px solid rgba(148, 163, 184, 0.45);
-        padding: 12px 14px;
-        backdrop-filter: blur(2px);
-      }
-      .hud-panel .hud-row + .hud-row {
-        margin-top: 8px;
-      }
-      .hud-panel-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px 12px;
-      }
-      .hud-panel-grid .hud-row + .hud-row {
-        margin-top: 0;
-      }
-
-      .hud-row label {
-        display: block;
-        font-family: var(--bp-mono);
-        font-size: 10px;
-        letter-spacing: 0.18em;
-        color: rgba(148, 163, 184, 0.85);
-        text-transform: uppercase;
-        margin-bottom: 6px;
-      }
-      .hud-row select {
-        width: 100%;
-        font-family: var(--bp-mono);
-        font-size: 11px;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: #e2e8f0;
-        background: rgba(15, 23, 42, 0.85);
-        border: 1px solid rgba(148, 163, 184, 0.45);
-        border-radius: 0;
-        padding: 8px 10px;
-        outline: none;
-        transition: border-color 200ms ease;
-      }
-      .hud-row select:focus,
-      .hud-row select:hover {
-        border-color: var(--bp-cyan);
-      }
-
-      .hud-toolbar .hud-row {
-        background: rgba(11, 15, 22, 0.6);
-        border: 1px solid rgba(148, 163, 184, 0.3);
-        padding: 10px 12px;
-      }
-
-      .hud-header {
-        position: absolute;
-        left: 16px;
-        top: 16px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-family: var(--bp-mono);
-        font-size: 10.5px;
-        letter-spacing: 0.2em;
-        color: rgba(226, 232, 240, 0.85);
-        text-transform: uppercase;
-        background: rgba(11, 15, 22, 0.78);
-        border: 1px solid rgba(148, 163, 184, 0.45);
-        padding: 6px 10px;
-      }
-      .hud-header .scan-bar {
-        position: relative;
-        width: 96px;
-        height: 4px;
-        background: rgba(148, 163, 184, 0.18);
-        overflow: hidden;
-      }
-      .hud-header .scan-bar::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 28px;
-        background: linear-gradient(90deg, transparent, var(--bp-cyan), transparent);
-        animation: hudScan 1.6s linear infinite;
-      }
-      .hud-header .scan-bar::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background-image: repeating-linear-gradient(
-          to right,
-          rgba(148, 163, 184, 0.45) 0 1px,
-          transparent 1px 12px
-        );
-      }
-      @keyframes hudScan {
-        0% { transform: translateX(-32px); }
-        100% { transform: translateX(96px); }
-      }
-
-      .status-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        font-family: var(--bp-mono);
-        font-size: 10.5px;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: rgba(226, 232, 240, 0.92);
-        background: rgba(11, 15, 22, 0.78);
-        border: 1px solid rgba(148, 163, 184, 0.45);
-        padding: 6px 10px;
-      }
-      .status-pill .dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 999px;
-        border: 1px solid rgba(148, 163, 184, 0.7);
-      }
-      .status-pill.is-loading .dot {
-        background: var(--bp-cyan);
-        animation: pulseDot 1.2s ease-in-out infinite;
-      }
-      .status-pill.is-ready .dot {
-        background: #22c55e;
-        border-color: #22c55e;
-      }
-      @keyframes pulseDot {
-        0%, 100% { opacity: 0.45; }
-        50% { opacity: 1; }
-      }
-
-      .form-field {
-        position: relative;
-        display: block;
-      }
-      .form-field .field-label {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        font-family: var(--bp-mono);
-        font-size: 10.5px;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: rgba(148, 163, 184, 0.85);
-        margin-bottom: 6px;
-      }
-      .form-field .field-label .field-num {
-        color: var(--bp-cyan);
-      }
-      .form-field input,
-      .form-field textarea {
-        width: 100%;
-        font-family: var(--bp-mono);
-        font-size: 13px;
-        letter-spacing: 0.04em;
-        color: #f1f5f9;
-        background: rgba(11, 15, 22, 0.7);
-        border: 1px solid rgba(148, 163, 184, 0.45);
-        border-radius: 0;
-        padding: 12px 14px;
-        outline: none;
-        transition: border-color 200ms ease;
-      }
-      .form-field textarea {
-        min-height: 7rem;
-        resize: vertical;
-      }
-      .form-field input::placeholder,
-      .form-field textarea::placeholder {
-        color: rgba(148, 163, 184, 0.55);
-      }
-      .form-field input:focus,
-      .form-field textarea:focus {
-        border-color: var(--bp-cyan);
-      }
-      .form-field .field-rule {
-        margin-top: 6px;
-        height: 1px;
-        background-image: repeating-linear-gradient(
-          to right,
-          rgba(148, 163, 184, 0.35) 0 4px,
-          transparent 4px 8px
-        );
-      }
-
-      .pictogram {
-        width: 18px;
-        height: 18px;
-        flex-shrink: 0;
-        color: rgba(34, 211, 238, 0.85);
-      }
-
-      .brand-logo {
-        height: 52px;
-        width: auto;
-        object-fit: contain;
-        opacity: 0.9;
-      }
-      .brand-logo-soft {
-        height: 28px;
-        opacity: 0.72;
-      }
-      .brand-logo-stamp {
-        height: 24px;
-        opacity: 0.82;
-      }
-      .brand-logo-hero {
-        position: absolute;
-        left: 50%;
-        top: clamp(26px, 3.6vw, 44px);
-        transform: translateX(-50%);
-        z-index: 3;
-      }
-
-      .title-stamp {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        font-family: var(--bp-mono);
-        font-size: 10.5px;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: rgba(203, 213, 225, 0.85);
-        border: 1px solid rgba(148, 163, 184, 0.45);
-        background: rgba(11, 15, 22, 0.65);
-      }
-      .title-stamp > div {
-        padding: 14px 16px;
-        border-right: 1px solid rgba(148, 163, 184, 0.35);
-      }
-      .title-stamp > div:last-child {
-        border-right: 0;
-      }
-      .title-stamp .ts-key {
-        color: rgba(148, 163, 184, 0.7);
-        font-size: 9.5px;
-        letter-spacing: 0.22em;
-        margin-bottom: 4px;
-      }
-      .title-stamp .ts-val {
-        color: #e2e8f0;
-      }
-
-      .scroll-progress {
-        position: fixed;
-        left: 0;
-        top: 0;
-        height: 1px;
-        width: 0;
-        background: var(--bp-cyan);
-        z-index: 50;
-        pointer-events: none;
-        transition: width 80ms linear;
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .hud-header .scan-bar::before,
-        .status-pill.is-loading .dot {
-          animation: none;
-        }
-        .scroll-progress {
-          transition: none;
-        }
-        .frame-corners::before,
-        .frame-corners::after,
-        .frame-corners > .fc-tr,
-        .frame-corners > .fc-bl,
-        .info-card::before,
-        .info-card::after,
-        .btn-tech,
-        .btn-tech::before,
-        .btn-tech::after {
-          transition: none;
-        }
-      }
-
-      .theme-toggle {
-        position: absolute;
-        right: 18px;
-        top: 18px;
-        z-index: 60;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 12px;
-        font-family: var(--bp-mono);
-        font-size: 10.5px;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: rgba(226, 232, 240, 0.9);
-        background: rgba(11, 15, 22, 0.7);
-        border: 1px solid rgba(148, 163, 184, 0.45);
-        cursor: pointer;
-        transition: border-color 200ms ease, background 200ms ease, color 200ms ease;
-      }
-      .theme-toggle:hover {
-        border-color: var(--bp-cyan);
-        color: #ecfeff;
-      }
-      .theme-toggle svg {
-        width: 14px;
-        height: 14px;
-        flex-shrink: 0;
-      }
-      .theme-toggle .icon-sun { display: none; }
-      .theme-toggle .icon-moon { display: block; }
-      :root[data-theme="light"] .theme-toggle .icon-sun { display: block; }
-      :root[data-theme="light"] .theme-toggle .icon-moon { display: none; }
-
-      :root[data-theme="light"] {
-        --bp-line: rgba(15, 23, 42, 0.07);
-        --bp-line-major: rgba(15, 23, 42, 0.13);
-        --bp-edge: rgba(15, 23, 42, 0.22);
-        --bp-cyan: #0e7490;
-        --bp-cyan-soft: rgba(14, 116, 144, 0.5);
-        color-scheme: light;
-      }
-      :root[data-theme="light"] body {
-        background: #fbf8ef;
-        color: #1e293b;
-      }
-      :root[data-theme="light"] .blueprint-bg {
-        background-color: #fbf8ef;
-      }
-      :root[data-theme="light"] .blueprint-bg::before,
-      :root[data-theme="light"] .blueprint-bg::after {
-        opacity: 0.45;
-      }
-
-      :root[data-theme="light"] .text-slate-100 { color: #0f172a; }
-      :root[data-theme="light"] .text-slate-200 { color: #1e293b; }
-      :root[data-theme="light"] .text-slate-300 { color: #334155; }
-      :root[data-theme="light"] .text-slate-400 { color: #475569; }
-      :root[data-theme="light"] .text-slate-500 { color: #64748b; }
-
-      :root[data-theme="light"] .bg-slate-950 { background-color: #f5efe1; }
-      :root[data-theme="light"] .bg-slate-950\/45 { background-color: rgba(245, 239, 225, 0.6); }
-      :root[data-theme="light"] .bg-slate-950\/55 { background-color: rgba(245, 239, 225, 0.7); }
-      :root[data-theme="light"] .bg-slate-950\/60 { background-color: rgba(245, 239, 225, 0.75); }
-      :root[data-theme="light"] .bg-slate-950\/65 { background-color: rgba(245, 239, 225, 0.78); }
-      :root[data-theme="light"] .bg-slate-950\/80 { background-color: rgba(245, 239, 225, 0.9); }
-      :root[data-theme="light"] .bg-slate-900\/30 { background-color: rgba(225, 217, 198, 0.4); }
-      :root[data-theme="light"] .bg-slate-900\/35 { background-color: rgba(225, 217, 198, 0.5); }
-      :root[data-theme="light"] .bg-slate-900\/40 { background-color: rgba(225, 217, 198, 0.55); }
-      :root[data-theme="light"] .bg-slate-900\/45 { background-color: rgba(225, 217, 198, 0.6); }
-      :root[data-theme="light"] .bg-slate-800\/35 { background-color: rgba(216, 207, 185, 0.45); }
-      :root[data-theme="light"] .bg-slate-800\/40 { background-color: rgba(216, 207, 185, 0.55); }
-      :root[data-theme="light"] .bg-slate-700\/55 { background-color: rgba(216, 207, 185, 0.65); }
-
-      :root[data-theme="light"] .border-slate-500\/40,
-      :root[data-theme="light"] .border-slate-500\/60,
-      :root[data-theme="light"] .border-slate-500\/70 { border-color: rgba(15, 23, 42, 0.3); }
-      :root[data-theme="light"] .border-slate-600 { border-color: rgba(15, 23, 42, 0.25); }
-      :root[data-theme="light"] .border-slate-700\/60,
-      :root[data-theme="light"] .border-slate-700\/70 { border-color: rgba(15, 23, 42, 0.2); }
-      :root[data-theme="light"] .border-slate-800\/80 { border-color: rgba(15, 23, 42, 0.14); }
-      :root[data-theme="light"] .divide-slate-800\/80 > * + * { border-color: rgba(15, 23, 42, 0.14); }
-
-      :root[data-theme="light"] .frame-corners::before,
-      :root[data-theme="light"] .frame-corners::after,
-      :root[data-theme="light"] .frame-corners > .fc-tr,
-      :root[data-theme="light"] .frame-corners > .fc-bl {
-        border-color: rgba(15, 23, 42, 0.55);
-      }
-      :root[data-theme="light"] .frame-corners:hover::before,
-      :root[data-theme="light"] .frame-corners:hover::after,
-      :root[data-theme="light"] .frame-corners:hover > .fc-tr,
-      :root[data-theme="light"] .frame-corners:hover > .fc-bl {
-        border-color: var(--bp-cyan);
-      }
-
-      :root[data-theme="light"] .tech-tag {
-        color: #1e293b;
-        border-color: rgba(15, 23, 42, 0.3);
-        background: rgba(15, 23, 42, 0.05);
-      }
-      :root[data-theme="light"] .tech-tag::before {
-        box-shadow: 0 0 0 1px rgba(14, 116, 144, 0.3);
-      }
-
-      :root[data-theme="light"] .rule-line::before,
-      :root[data-theme="light"] .ruler-scale::before {
-        background: rgba(15, 23, 42, 0.35);
-      }
-      :root[data-theme="light"] .rule-line::after {
-        background-image: repeating-linear-gradient(
-          to right,
-          rgba(15, 23, 42, 0.5) 0 1px,
-          transparent 1px 64px
-        );
-      }
-      :root[data-theme="light"] .tech-line::before {
-        background: rgba(15, 23, 42, 0.35);
-      }
-      :root[data-theme="light"] .tech-line::after {
-        background-image: repeating-linear-gradient(
-          to right,
-          rgba(15, 23, 42, 0.45) 0 1px,
-          transparent 1px 32px
-        );
-      }
-
-      :root[data-theme="light"] .toc-link {
-        color: #475569;
-      }
-      :root[data-theme="light"] .toc-link.active {
-        color: #0f172a;
-        background: rgba(15, 23, 42, 0.06);
-        border-left-color: var(--bp-cyan);
-      }
-      :root[data-theme="light"] .toc-link.active .toc-num {
-        color: var(--bp-cyan);
-      }
-
-      :root[data-theme="light"] .info-card {
-        border-color: rgba(15, 23, 42, 0.18);
-        background: rgba(15, 23, 42, 0.04);
-      }
-      :root[data-theme="light"] .info-card::before,
-      :root[data-theme="light"] .info-card::after {
-        border-color: rgba(15, 23, 42, 0.45);
-      }
-
-      :root[data-theme="light"] .tech-panel::before {
-        background-image:
-          linear-gradient(rgba(14, 116, 144, 0.06) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(14, 116, 144, 0.06) 1px, transparent 1px);
-      }
-      :root[data-theme="light"] .tech-panel::after {
-        color: rgba(14, 116, 144, 0.7);
-        border-color: rgba(14, 116, 144, 0.45);
-      }
-
-      :root[data-theme="light"] .btn-tech {
-        color: #0f172a;
-        background: rgba(15, 23, 42, 0.05);
-        border-color: rgba(15, 23, 42, 0.3);
-      }
-      :root[data-theme="light"] .btn-tech:hover {
-        color: #0e7490;
-        background: rgba(14, 116, 144, 0.1);
-        border-color: var(--bp-cyan);
-      }
-      :root[data-theme="light"] .btn-tech.btn-ghost {
-        color: #334155;
-        border-color: rgba(15, 23, 42, 0.25);
-      }
-      :root[data-theme="light"] .btn-tech::before,
-      :root[data-theme="light"] .btn-tech::after {
-        border-color: var(--bp-cyan);
-      }
-
-      :root[data-theme="light"] .step-card::before {
-        background-image: repeating-linear-gradient(
-          to bottom,
-          rgba(15, 23, 42, 0.35) 0 6px,
-          transparent 6px 12px
-        );
-      }
-      :root[data-theme="light"] .step-card::after {
-        background: #fbf8ef;
-        border-color: rgba(15, 23, 42, 0.45);
-      }
-      :root[data-theme="light"] .step-card.active::after {
-        background: var(--bp-cyan);
-        border-color: var(--bp-cyan);
-      }
-
-      :root[data-theme="light"] .hud-header {
-        background: rgba(251, 248, 239, 0.92);
-        border-color: rgba(15, 23, 42, 0.25);
-        color: #1e293b;
-      }
-      :root[data-theme="light"] .hud-header .scan-bar {
-        background: rgba(15, 23, 42, 0.1);
-      }
-      :root[data-theme="light"] .hud-header .scan-bar::after {
-        background-image: repeating-linear-gradient(
-          to right,
-          rgba(15, 23, 42, 0.4) 0 1px,
-          transparent 1px 12px
-        );
-      }
-      :root[data-theme="light"] .hud-panel {
-        background: rgba(251, 248, 239, 0.92);
-        border-color: rgba(15, 23, 42, 0.3);
-      }
-      :root[data-theme="light"] .hud-row label {
-        color: rgba(15, 23, 42, 0.6);
-      }
-      :root[data-theme="light"] .hud-row select {
-        color: #0f172a;
-        background: rgba(15, 23, 42, 0.04);
-        border-color: rgba(15, 23, 42, 0.25);
-      }
-      :root[data-theme="light"] .hud-row select:focus,
-      :root[data-theme="light"] .hud-row select:hover {
-        border-color: var(--bp-cyan);
-      }
-
-      :root[data-theme="light"] .status-pill {
-        background: rgba(251, 248, 239, 0.92);
-        border-color: rgba(15, 23, 42, 0.25);
-        color: #1e293b;
-      }
-      :root[data-theme="light"] .status-pill .dot {
-        border-color: rgba(15, 23, 42, 0.45);
-      }
-
-      :root[data-theme="light"] .form-field input,
-      :root[data-theme="light"] .form-field textarea {
-        color: #0f172a;
-        background: rgba(15, 23, 42, 0.03);
-        border-color: rgba(15, 23, 42, 0.25);
-      }
-      :root[data-theme="light"] .form-field input::placeholder,
-      :root[data-theme="light"] .form-field textarea::placeholder {
-        color: rgba(15, 23, 42, 0.4);
-      }
-      :root[data-theme="light"] .form-field .field-rule {
-        background-image: repeating-linear-gradient(
-          to right,
-          rgba(15, 23, 42, 0.3) 0 4px,
-          transparent 4px 8px
-        );
-      }
-
-      :root[data-theme="light"] .title-stamp {
-        background: rgba(15, 23, 42, 0.04);
-        border-color: rgba(15, 23, 42, 0.3);
-        color: #1e293b;
-      }
-      :root[data-theme="light"] .title-stamp > div {
-        border-right-color: rgba(15, 23, 42, 0.18);
-      }
-      :root[data-theme="light"] .title-stamp .ts-key {
-        color: rgba(15, 23, 42, 0.55);
-      }
-      :root[data-theme="light"] .title-stamp .ts-val {
-        color: #0f172a;
-      }
-
-      :root[data-theme="light"] .pictogram {
-        color: rgba(14, 116, 144, 0.85);
-      }
-
-      :root[data-theme="light"] .brand-logo,
-      :root[data-theme="light"] .brand-logo-soft,
-      :root[data-theme="light"] .brand-logo-stamp,
-      :root[data-theme="light"] .brand-logo-hero {
-        filter: invert(1) brightness(0.18);
-        opacity: 0.92;
-      }
-
-      :root[data-theme="light"] .theme-toggle {
-        color: #1e293b;
-        background: rgba(251, 248, 239, 0.92);
-        border-color: rgba(15, 23, 42, 0.3);
-      }
-      :root[data-theme="light"] .theme-toggle:hover {
-        color: #0e7490;
-        border-color: var(--bp-cyan);
-      }
-    </style>
+    <link rel="stylesheet" href="./assets/css/main.css" />
   </head>
   <body class="text-slate-100 antialiased">
     <div class="blueprint-bg" aria-hidden="true"></div>
@@ -1066,7 +53,7 @@
       <span class="fc-tr"></span><span class="fc-bl"></span>
       <div class="flex items-center justify-between gap-4">
         <div class="flex items-center gap-3">
-          <img class="brand-logo brand-logo-hero" src="./лого ГеоВектор белый.png" alt="ГеоВектор" />
+          <img class="brand-logo brand-logo-hero" src="./assets/images/logo.png" alt="ГеоВектор" />
           <span class="tech-tag">S-00 · Title Block · Digital Survey Lab</span>
         </div>
         <span class="tech-tag mono" aria-label="Версия документа">Sheet 01 / 09 · Rev A · 2026</span>
@@ -1189,118 +176,216 @@
         </div>
       </section>
 
-      <section id="insights" class="bg-slate-950 py-16 md:py-24 lg:py-28">
+      <section id="insights" class="insights-bg py-16 md:py-24 lg:py-28">
         <div class="mx-auto max-w-[90rem] px-6 md:px-10 lg:px-12">
           <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
             <span class="tech-tag">S-02 · BIM Expertise · Insights Sheet</span>
             <span class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-400">8 модулей · IFC4 / РД / 5D</span>
           </div>
           <div class="rule-line mb-10" aria-hidden="true"></div>
-          <div class="grid gap-10 lg:grid-cols-[320px_1fr] lg:gap-14">
+          <div class="grid gap-10 lg:grid-cols-[280px_1fr] lg:gap-16">
           <aside class="lg:sticky lg:top-6 lg:self-start">
-            <div class="frame-corners relative border border-slate-700/70 bg-slate-900/45 p-5">
-              <span class="fc-tr"></span><span class="fc-bl"></span>
-              <p class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-400">Экспертный профиль · Index</p>
-              <nav class="mt-4 space-y-1">
-                <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s1"><span class="toc-num mono">01</span><span>BIM-экспертиза 2025</span></a>
-                <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s2"><span class="toc-num mono">02</span><span>Форматы и IFC4</span></a>
-                <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s3"><span class="toc-num mono">03</span><span>LOD и требования</span></a>
-                <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s4"><span class="toc-num mono">04</span><span>Подготовка к сдаче</span></a>
-                <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s5"><span class="toc-num mono">05</span><span>Артефакты BIM-комплекта</span></a>
-                <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s6"><span class="toc-num mono">06</span><span>5D-смета и контроль</span></a>
-                <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s7"><span class="toc-num mono">07</span><span>Типовые ошибки</span></a>
-                <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s8"><span class="toc-num mono">08</span><span>Итоговая экспертиза</span></a>
-              </nav>
-            </div>
+            <p class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-500 mb-3 px-3">Содержание</p>
+            <nav class="space-y-0.5 border-l border-slate-800">
+              <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s1"><span class="toc-num mono">01</span><span>BIM-экспертиза 2025</span></a>
+              <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s2"><span class="toc-num mono">02</span><span>Форматы и IFC4</span></a>
+              <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s3"><span class="toc-num mono">03</span><span>LOD и требования</span></a>
+              <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s4"><span class="toc-num mono">04</span><span>Подготовка к сдаче</span></a>
+              <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s5"><span class="toc-num mono">05</span><span>Артефакты BIM-комплекта</span></a>
+              <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s6"><span class="toc-num mono">06</span><span>5D-смета и контроль</span></a>
+              <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s7"><span class="toc-num mono">07</span><span>Типовые ошибки</span></a>
+              <a class="toc-link px-3 py-2 text-slate-400 transition" href="#insight-s8"><span class="toc-num mono">08</span><span>Итоговая экспертиза</span></a>
+            </nav>
           </aside>
 
-          <article class="space-y-8">
-            <section id="insight-s1" class="frame-corners relative border border-slate-700/70 bg-slate-900/35 p-8">
-              <span class="fc-tr"></span><span class="fc-bl"></span>
-              <span class="tech-tag mb-4">S-02.01 · Expertise core</span>
-              <h3 class="mt-3 text-3xl font-semibold leading-tight md:text-4xl">BIM-экспертиза в 2025: практический стандарт нашей команды</h3>
-              <p class="mt-4 text-slate-300">Мы ведём проекты в логике цифровой экспертизы: проверяем не только листы, а целостность ЦИМ — геометрию, атрибуты, иерархию, коллизии и связность решений между дисциплинами.</p>
-              <p class="mt-3 text-slate-300">Такой подход сокращает цикл согласований, снижает количество замечаний и повышает предсказуемость сроков на этапе строительства.</p>
-            </section>
-
-            <section id="insight-s2" class="tech-panel frame-corners relative border border-slate-700/60 bg-slate-900/30 p-8" data-stamp="// IFC4 · S-02.02">
-              <span class="fc-tr"></span><span class="fc-bl"></span>
-              <h3 class="text-2xl font-semibold">Форматы и IFC4: как мы обеспечиваем совместимость</h3>
-              <p class="mt-4 text-slate-300">Основной формат выдачи — IFC4. Параллельно сохраняем нативные модели (RVT/PLN) для глубокой технической проверки и быстрого уточнения спорных мест.</p>
-              <div class="tech-line mt-5 w-full"></div>
-              <div class="mt-5 grid gap-3 md:grid-cols-3">
-                <div class="info-card p-4"><p class="text-sm text-slate-300"><strong>IFC4:</strong> обязательный обменный формат для экспертизы.</p></div>
-                <div class="info-card p-4"><p class="text-sm text-slate-300"><strong>RVT/PLN:</strong> исходник для детального инженерного контроля.</p></div>
-                <div class="info-card p-4"><p class="text-sm text-slate-300"><strong>PDF/Excel:</strong> листы, спецификации, ведомости из модели.</p></div>
+          <article class="divide-y divide-slate-800/50">
+            <section id="insight-s1" class="py-10 first:pt-0">
+              <p class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-500 mb-4">01</p>
+              <div class="grid items-start gap-10 md:grid-cols-[1fr_180px]">
+                <div>
+                  <h3 class="text-2xl font-semibold leading-tight md:text-3xl">BIM-экспертиза в 2025: практический стандарт нашей команды</h3>
+                  <p class="mt-4 text-slate-300">Мы ведём проекты в логике цифровой экспертизы: проверяем не только листы, а целостность ЦИМ — геометрию, атрибуты, иерархию, коллизии и связность решений между дисциплинами.</p>
+                  <p class="mt-3 text-slate-300">Такой подход сокращает цикл согласований, снижает количество замечаний и повышает предсказуемость сроков на этапе строительства.</p>
+                </div>
+                <div class="hidden md:flex items-start justify-center pt-1">
+                  <svg viewBox="0 0 180 148" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full max-w-[180px]" aria-hidden="true">
+                    <!-- КР layer -->
+                    <rect x="10" y="96" width="160" height="38" fill="rgba(148,163,184,0.04)" stroke="rgba(148,163,184,0.22)" stroke-width="1"/>
+                    <text x="20" y="119" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="8" letter-spacing="2.5" fill="rgba(148,163,184,0.4)">КР</text>
+                    <text x="42" y="119" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="8" letter-spacing="1" fill="rgba(148,163,184,0.28)">КОНСТРУКЦИИ</text>
+                    <!-- ОВ layer -->
+                    <rect x="10" y="57" width="160" height="38" fill="rgba(148,163,184,0.05)" stroke="rgba(148,163,184,0.32)" stroke-width="1"/>
+                    <text x="20" y="80" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="8" letter-spacing="2.5" fill="rgba(148,163,184,0.55)">ОВ</text>
+                    <text x="42" y="80" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="8" letter-spacing="1" fill="rgba(148,163,184,0.38)">ВК · ЭОМ</text>
+                    <!-- АР layer (top, cyan) -->
+                    <rect x="10" y="18" width="160" height="38" fill="rgba(34,211,238,0.05)" stroke="var(--bp-cyan)" stroke-width="1" opacity="0.75"/>
+                    <text x="20" y="41" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="8" letter-spacing="2.5" fill="var(--bp-cyan)">АР</text>
+                    <text x="42" y="41" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="8" letter-spacing="1" fill="rgba(34,211,238,0.6)">АРХИТЕКТУРА</text>
+                    <!-- Side connectors -->
+                    <line x1="10" y1="18" x2="10" y2="134" stroke="rgba(148,163,184,0.18)" stroke-width="0.5" stroke-dasharray="2,3"/>
+                    <line x1="170" y1="18" x2="170" y2="134" stroke="rgba(148,163,184,0.18)" stroke-width="0.5" stroke-dasharray="2,3"/>
+                    <!-- Collision marker -->
+                    <circle cx="148" cy="57" r="6" stroke="var(--bp-cyan)" stroke-width="1" fill="rgba(34,211,238,0.08)" opacity="0.9"/>
+                    <line x1="144.8" y1="53.8" x2="151.2" y2="60.2" stroke="var(--bp-cyan)" stroke-width="1.2" opacity="0.9"/>
+                    <line x1="151.2" y1="53.8" x2="144.8" y2="60.2" stroke="var(--bp-cyan)" stroke-width="1.2" opacity="0.9"/>
+                    <!-- Check on AR -->
+                    <circle cx="148" cy="37" r="6" stroke="var(--bp-cyan)" stroke-width="1" fill="rgba(34,211,238,0.08)" opacity="0.7"/>
+                    <polyline points="145,37 147.5,39.5 152,34.5" stroke="var(--bp-cyan)" stroke-width="1.2" stroke-linejoin="round" fill="none" opacity="0.7"/>
+                  </svg>
+                </div>
               </div>
             </section>
 
-            <section id="insight-s3" class="frame-corners relative border border-slate-700/60 bg-slate-900/30 p-8">
-              <span class="fc-tr"></span><span class="fc-bl"></span>
-              <span class="tech-tag mb-4">S-02.03 · LOD balance</span>
-              <h3 class="mt-3 text-2xl font-semibold">LOD и глубина проработки: где мы держим инженерный баланс</h3>
-              <p class="mt-4 text-slate-300">Для проектной стадии мы ведём модель на уровне LOD 300, а по узловым зонам поднимаем до LOD 350/400, когда это действительно влияет на координацию и стоимость.</p>
-              <ul class="mt-4 space-y-2 text-slate-300">
-                <li>• LOD 200 — недостаточно для надёжной проверки;</li>
-                <li>• LOD 300 — рабочий минимум для экспертизы ПД;</li>
-                <li>• LOD 400 — целевой уровень для сложных производственных узлов.</li>
-              </ul>
+            <section id="insight-s2" class="py-10">
+              <p class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-500 mb-4">02</p>
+              <h3 class="text-2xl font-semibold">Форматы и IFC4: как мы обеспечиваем совместимость</h3>
+              <p class="mt-4 text-slate-300">Основной формат выдачи — IFC4. Параллельно сохраняем нативные модели (RVT/PLN) для глубокой технической проверки и быстрого уточнения спорных мест.</p>
+              <div class="mt-5 grid gap-2 md:grid-cols-3">
+                <div class="insights-card p-4 text-sm text-slate-300"><strong class="block text-slate-200 mb-1">IFC4</strong>Обязательный обменный формат для экспертизы.</div>
+                <div class="insights-card p-4 text-sm text-slate-300"><strong class="block text-slate-200 mb-1">RVT / PLN</strong>Исходник для детального инженерного контроля.</div>
+                <div class="insights-card p-4 text-sm text-slate-300"><strong class="block text-slate-200 mb-1">PDF / Excel</strong>Листы, спецификации, ведомости из модели.</div>
+              </div>
             </section>
 
-            <section id="insight-s4" class="frame-corners relative border border-slate-700/60 bg-slate-900/30 p-8">
-              <span class="fc-tr"></span><span class="fc-bl"></span>
-              <span class="tech-tag mb-4">S-02.04 · QC regulation</span>
-              <h3 class="mt-3 text-2xl font-semibold">Подготовка модели перед подачей: наш регламент качества</h3>
-              <ol class="mt-4 space-y-2 text-slate-300">
-                <li>1. Clash-detection по дисциплинам (АР, КР, ОВ, ВК, ЭОМ).</li>
-                <li>2. Валидация атрибутов: материалы, марки, параметры систем.</li>
-                <li>3. Контроль IFC-экспорта и повторная проверка в независимом viewer.</li>
-                <li>4. Синхронная выгрузка листов, спецификаций и ведомостей из актуальной модели.</li>
+            <section id="insight-s3" class="py-10">
+              <p class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-500 mb-4">03</p>
+              <h3 class="text-2xl font-semibold">LOD и глубина проработки: где мы держим инженерный баланс</h3>
+              <p class="mt-4 text-slate-300">Для проектной стадии мы ведём модель на уровне LOD 300, а по узловым зонам поднимаем до LOD 350/400, когда это действительно влияет на координацию и стоимость.</p>
+              <ul class="mt-5 space-y-3 text-slate-300">
+                <li class="flex gap-4"><span class="mono text-slate-500 text-sm shrink-0 pt-0.5">200</span><span>Недостаточно для надёжной проверки.</span></li>
+                <li class="flex gap-4"><span class="mono text-slate-500 text-sm shrink-0 pt-0.5">300</span><span>Рабочий минимум для экспертизы ПД.</span></li>
+                <li class="flex gap-4"><span class="mono text-slate-500 text-sm shrink-0 pt-0.5">400</span><span>Целевой уровень для сложных производственных узлов.</span></li>
+              </ul>
+              <div class="mt-8">
+                <svg viewBox="0 0 340 112" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full max-w-[480px]" aria-hidden="true">
+                  <!-- LOD 200 — простой контур -->
+                  <rect x="0" y="16" width="80" height="72" stroke="rgba(148,163,184,0.35)" stroke-width="1" fill="rgba(148,163,184,0.03)"/>
+                  <text x="0" y="105" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="8.5" letter-spacing="2" fill="rgba(148,163,184,0.45)">LOD 200</text>
+
+                  <!-- Arrow 1 -->
+                  <line x1="88" y1="52" x2="106" y2="52" stroke="rgba(148,163,184,0.28)" stroke-width="0.8"/>
+                  <polygon points="103,49 109,52 103,55" fill="rgba(148,163,184,0.28)"/>
+
+                  <!-- LOD 300 — с разбивкой на помещения -->
+                  <rect x="116" y="16" width="80" height="72" stroke="var(--bp-cyan)" stroke-width="1" fill="rgba(34,211,238,0.03)" opacity="0.65"/>
+                  <line x1="116" y1="50" x2="196" y2="50" stroke="var(--bp-cyan)" stroke-width="0.7" opacity="0.4"/>
+                  <line x1="156" y1="16" x2="156" y2="88" stroke="var(--bp-cyan)" stroke-width="0.7" opacity="0.4"/>
+                  <!-- дверной проём -->
+                  <rect x="152" y="48" width="8" height="4" fill="#111111"/>
+                  <text x="116" y="105" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="8.5" letter-spacing="2" fill="var(--bp-cyan)" opacity="0.7">LOD 300</text>
+
+                  <!-- Arrow 2 -->
+                  <line x1="204" y1="52" x2="222" y2="52" stroke="rgba(148,163,184,0.28)" stroke-width="0.8"/>
+                  <polygon points="219,49 225,52 219,55" fill="rgba(148,163,184,0.28)"/>
+
+                  <!-- LOD 400 — детальный -->
+                  <rect x="232" y="16" width="108" height="72" stroke="var(--bp-cyan)" stroke-width="1" fill="rgba(34,211,238,0.04)"/>
+                  <line x1="232" y1="48" x2="340" y2="48" stroke="var(--bp-cyan)" stroke-width="0.7" opacity="0.5"/>
+                  <line x1="286" y1="16" x2="286" y2="88" stroke="var(--bp-cyan)" stroke-width="0.7" opacity="0.5"/>
+                  <!-- оконные проёмы -->
+                  <rect x="242" y="16" width="14" height="2.5" fill="var(--bp-cyan)" opacity="0.55"/>
+                  <rect x="262" y="16" width="14" height="2.5" fill="var(--bp-cyan)" opacity="0.55"/>
+                  <rect x="295" y="16" width="14" height="2.5" fill="var(--bp-cyan)" opacity="0.55"/>
+                  <rect x="232" y="27" width="2.5" height="12" fill="var(--bp-cyan)" opacity="0.55"/>
+                  <rect x="232" y="56" width="2.5" height="12" fill="var(--bp-cyan)" opacity="0.55"/>
+                  <!-- оборудование / мебель -->
+                  <rect x="239" y="54" width="24" height="16" stroke="var(--bp-cyan)" stroke-width="0.6" fill="none" stroke-dasharray="2,2" opacity="0.6"/>
+                  <rect x="291" y="22" width="18" height="14" stroke="var(--bp-cyan)" stroke-width="0.6" fill="none" stroke-dasharray="2,2" opacity="0.6"/>
+                  <rect x="314" y="56" width="14" height="18" stroke="var(--bp-cyan)" stroke-width="0.6" fill="none" stroke-dasharray="2,2" opacity="0.6"/>
+                  <!-- дверной проём -->
+                  <rect x="282" y="46" width="8" height="4" fill="#111111"/>
+                  <text x="232" y="105" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="8.5" letter-spacing="2" fill="var(--bp-cyan)">LOD 400</text>
+                </svg>
+              </div>
+            </section>
+
+            <section id="insight-s4" class="py-10">
+              <p class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-500 mb-4">04</p>
+              <h3 class="text-2xl font-semibold">Подготовка модели перед подачей: наш регламент качества</h3>
+              <ol class="mt-5 space-y-3 text-slate-300">
+                <li class="flex gap-4"><span class="mono text-slate-500 text-sm shrink-0 pt-0.5">01</span><span>Clash-detection по дисциплинам (АР, КР, ОВ, ВК, ЭОМ).</span></li>
+                <li class="flex gap-4"><span class="mono text-slate-500 text-sm shrink-0 pt-0.5">02</span><span>Валидация атрибутов: материалы, марки, параметры систем.</span></li>
+                <li class="flex gap-4"><span class="mono text-slate-500 text-sm shrink-0 pt-0.5">03</span><span>Контроль IFC-экспорта и повторная проверка в независимом viewer.</span></li>
+                <li class="flex gap-4"><span class="mono text-slate-500 text-sm shrink-0 pt-0.5">04</span><span>Синхронная выгрузка листов, спецификаций и ведомостей из актуальной модели.</span></li>
               </ol>
             </section>
 
-            <section id="insight-s5" class="tech-panel frame-corners relative border border-slate-700/60 bg-slate-900/30 p-8" data-stamp="// DELIVERABLES · S-02.05">
-              <span class="fc-tr"></span><span class="fc-bl"></span>
+            <section id="insight-s5" class="py-10">
+              <p class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-500 mb-4">05</p>
               <h3 class="text-2xl font-semibold">Артефакты BIM-комплекта: что получает заказчик и экспертиза</h3>
-              <div class="mt-4 grid gap-3 md:grid-cols-2">
-                <div class="info-card p-4"><p class="text-sm text-slate-300">IFC4-модель с валидной структурой и атрибутами.</p></div>
-                <div class="info-card p-4"><p class="text-sm text-slate-300">Планы, разрезы, фасады и схемы из актуальной ЦИМ.</p></div>
-                <div class="info-card p-4"><p class="text-sm text-slate-300">Спецификации и ведомости объёмов из модели.</p></div>
-                <div class="info-card p-4"><p class="text-sm text-slate-300">Сметные выгрузки и отчёты коллизий для защиты решений.</p></div>
+              <div class="mt-5 grid gap-2 md:grid-cols-2">
+                <div class="insights-card p-4 text-sm text-slate-300">IFC4-модель с валидной структурой и атрибутами.</div>
+                <div class="insights-card p-4 text-sm text-slate-300">Планы, разрезы, фасады и схемы из актуальной ЦИМ.</div>
+                <div class="insights-card p-4 text-sm text-slate-300">Спецификации и ведомости объёмов из модели.</div>
+                <div class="insights-card p-4 text-sm text-slate-300">Сметные выгрузки и отчёты коллизий для защиты решений.</div>
               </div>
-              <div class="tech-line mt-6 w-full"></div>
             </section>
 
-            <section id="insight-s6" class="frame-corners relative border border-slate-700/60 bg-slate-900/30 p-8">
-              <span class="fc-tr"></span><span class="fc-bl"></span>
-              <span class="tech-tag mb-4">S-02.06 · 5D control</span>
-              <h3 class="mt-3 text-2xl font-semibold">5D-смета и контроль бюджета</h3>
+            <section id="insight-s6" class="py-10">
+              <p class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-500 mb-4">06</p>
+              <h3 class="text-2xl font-semibold">5D-смета и контроль бюджета</h3>
               <p class="mt-4 text-slate-300">Мы связываем сметные позиции с элементами модели, чтобы количество работ обновлялось автоматически при изменениях в проекте.</p>
               <p class="mt-3 text-slate-300">Это снижает риски расхождений между проектом, сметой и фактическим выполнением на стройке.</p>
+              <div class="mt-8">
+                <svg viewBox="0 0 380 72" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full max-w-[520px]" aria-hidden="true">
+                  <!-- Node 1: BIM -->
+                  <rect x="0" y="12" width="78" height="48" stroke="var(--bp-cyan)" stroke-width="1" fill="rgba(34,211,238,0.05)"/>
+                  <text x="39" y="33" text-anchor="middle" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="8" letter-spacing="2" fill="var(--bp-cyan)">BIM</text>
+                  <text x="39" y="49" text-anchor="middle" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="7.5" letter-spacing="1" fill="rgba(34,211,238,0.6)">МОДЕЛЬ</text>
+
+                  <!-- Arrow 1 -->
+                  <line x1="78" y1="36" x2="100" y2="36" stroke="rgba(148,163,184,0.3)" stroke-width="0.8"/>
+                  <polygon points="97,33 103,36 97,39" fill="rgba(148,163,184,0.3)"/>
+                  <text x="89" y="28" text-anchor="middle" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="6.5" fill="rgba(148,163,184,0.35)" letter-spacing="0.5">авто</text>
+
+                  <!-- Node 2: Объёмы -->
+                  <rect x="103" y="12" width="78" height="48" stroke="rgba(148,163,184,0.38)" stroke-width="1" fill="rgba(148,163,184,0.03)"/>
+                  <text x="142" y="33" text-anchor="middle" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="8" letter-spacing="1.5" fill="rgba(148,163,184,0.65)">ОБЪЁМЫ</text>
+                  <text x="142" y="49" text-anchor="middle" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="7.5" letter-spacing="0.5" fill="rgba(148,163,184,0.42)">из модели</text>
+
+                  <!-- Arrow 2 -->
+                  <line x1="181" y1="36" x2="203" y2="36" stroke="rgba(148,163,184,0.3)" stroke-width="0.8"/>
+                  <polygon points="200,33 206,36 200,39" fill="rgba(148,163,184,0.3)"/>
+                  <text x="192" y="28" text-anchor="middle" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="6.5" fill="rgba(148,163,184,0.35)" letter-spacing="0.5">авто</text>
+
+                  <!-- Node 3: Смета -->
+                  <rect x="206" y="12" width="78" height="48" stroke="rgba(148,163,184,0.38)" stroke-width="1" fill="rgba(148,163,184,0.03)"/>
+                  <text x="245" y="33" text-anchor="middle" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="8" letter-spacing="2" fill="rgba(148,163,184,0.65)">5D</text>
+                  <text x="245" y="49" text-anchor="middle" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="7.5" letter-spacing="0.5" fill="rgba(148,163,184,0.42)">СМЕТА</text>
+
+                  <!-- Arrow 3 -->
+                  <line x1="284" y1="36" x2="306" y2="36" stroke="rgba(148,163,184,0.3)" stroke-width="0.8"/>
+                  <polygon points="303,33 309,36 303,39" fill="rgba(148,163,184,0.3)"/>
+
+                  <!-- Node 4: Контроль (highlighted) -->
+                  <rect x="309" y="12" width="71" height="48" stroke="var(--bp-cyan)" stroke-width="1" fill="rgba(34,211,238,0.05)"/>
+                  <text x="344" y="33" text-anchor="middle" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="7.5" letter-spacing="1" fill="var(--bp-cyan)">КОНТРОЛЬ</text>
+                  <text x="344" y="49" text-anchor="middle" font-family="ui-monospace,'JetBrains Mono',monospace" font-size="7.5" letter-spacing="0.5" fill="rgba(34,211,238,0.6)">БЮДЖЕТА</text>
+                </svg>
+              </div>
             </section>
 
-            <section id="insight-s7" class="frame-corners relative border border-slate-700/60 bg-slate-900/30 p-8">
-              <span class="fc-tr"></span><span class="fc-bl"></span>
-              <span class="tech-tag mb-4">S-02.07 · Common defects</span>
-              <h3 class="mt-3 text-2xl font-semibold">Типовые ошибки, которые мы снимаем до экспертизы</h3>
-              <ul class="mt-4 space-y-2 text-slate-300">
-                <li>• конфликт инженерных систем с конструкциями;</li>
-                <li>• дубли и разрывы элементов;</li>
-                <li>• неполные или формальные атрибуты;</li>
-                <li>• расхождения между моделью и листами.</li>
+            <section id="insight-s7" class="py-10">
+              <p class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-500 mb-4">07</p>
+              <h3 class="text-2xl font-semibold">Типовые ошибки, которые мы снимаем до экспертизы</h3>
+              <ul class="mt-5 space-y-2 text-slate-300">
+                <li class="flex gap-4"><span class="mono text-slate-600 text-sm shrink-0">—</span><span>Конфликт инженерных систем с конструкциями.</span></li>
+                <li class="flex gap-4"><span class="mono text-slate-600 text-sm shrink-0">—</span><span>Дубли и разрывы элементов.</span></li>
+                <li class="flex gap-4"><span class="mono text-slate-600 text-sm shrink-0">—</span><span>Неполные или формальные атрибуты.</span></li>
+                <li class="flex gap-4"><span class="mono text-slate-600 text-sm shrink-0">—</span><span>Расхождения между моделью и листами.</span></li>
               </ul>
             </section>
 
-            <section id="insight-s8" class="tech-panel frame-corners relative border border-slate-700/60 bg-slate-900/30 p-8" data-stamp="// SUMMARY · S-02.08">
-              <span class="fc-tr"></span><span class="fc-bl"></span>
+            <section id="insight-s8" class="py-10">
+              <p class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-500 mb-4">08</p>
               <h3 class="text-2xl font-semibold">Итоговая экспертиза: чем сильна наша команда</h3>
               <p class="mt-4 text-slate-300">Мы объединяем BIM-моделирование, геодезию, стройконтроль и инженерную экспертизу в одном контуре, чтобы проект проходил путь от данных к реализации без потери качества.</p>
-              <div class="mt-6 grid gap-3 md:grid-cols-3">
-                <div class="info-card p-4"><p class="text-sm text-slate-300">Цифровая координация разделов</p></div>
-                <div class="info-card p-4"><p class="text-sm text-slate-300">Геодезический контроль на площадке</p></div>
-                <div class="info-card p-4"><p class="text-sm text-slate-300">Прозрачная 5D-экономика проекта</p></div>
+              <div class="mt-5 grid gap-2 md:grid-cols-3">
+                <div class="insights-card p-4 text-sm text-slate-300">Цифровая координация разделов</div>
+                <div class="insights-card p-4 text-sm text-slate-300">Геодезический контроль на площадке</div>
+                <div class="insights-card p-4 text-sm text-slate-300">Прозрачная 5D-экономика проекта</div>
               </div>
-              <a href="#cta" class="btn-tech mt-6">Обсудить задачу <span aria-hidden="true">[→]</span></a>
+              <a href="#cta" class="btn-tech mt-8 inline-flex">Обсудить задачу <span aria-hidden="true">[→]</span></a>
             </section>
           </article>
           </div>
@@ -1313,7 +398,7 @@
             <span class="tech-tag">S-07 · Tech Stack · Hardware + Software</span>
             <div class="flex items-center gap-3">
               <span class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-400">Field → Office → BIM</span>
-              <img class="brand-logo-soft" src="./лого ГеоВектор белый.png" alt="ГеоВектор" />
+              <img class="brand-logo-soft" src="./assets/images/logo.png" alt="ГеоВектор" />
             </div>
           </div>
           <div class="rule-line mb-10" aria-hidden="true"></div>
@@ -1377,49 +462,68 @@
         </div>
       </section>
 
-      <section id="cta" class="bg-slate-950/45 py-16 md:py-24">
+      <section id="cta" class="bg-slate-950 py-16 md:py-24">
         <div class="mx-auto max-w-[90rem] px-6 md:px-10 lg:px-12">
-          <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
-            <span class="tech-tag">S-08 · Engineering Brief · Request Form</span>
-            <span class="mono text-[10.5px] uppercase tracking-[0.2em] text-slate-400">Form-RQ-001 · Rev A</span>
+          <div class="mb-8 flex items-center gap-4">
+            <span class="tech-tag">S-08 · Связаться</span>
           </div>
-          <div class="rule-line mb-10" aria-hidden="true"></div>
+          <div class="rule-line mb-12" aria-hidden="true"></div>
 
-          <div class="grid gap-8 lg:grid-cols-[1fr_1fr]">
-            <div>
-              <p class="mono text-[10.5px] uppercase tracking-[0.22em] text-slate-400">Инженерный опросник</p>
-              <h3 class="mt-3 text-3xl font-semibold md:text-4xl">Запрос на цифровую копию объекта</h3>
-              <p class="mt-5 max-w-lg text-sm text-slate-300">
-                Укажите тип объекта, цели BIM и ожидаемый уровень детализации. Подготовим техническое предложение
-                и дорожную карту проекта.
-              </p>
-              <div class="mt-6 grid gap-3 max-w-md">
-                <div class="info-card p-3 mono text-[10.5px] uppercase tracking-[0.18em] text-slate-300">№ 01 — Тип объекта</div>
-                <div class="info-card p-3 mono text-[10.5px] uppercase tracking-[0.18em] text-slate-300">№ 02 — Целевой LOD</div>
-                <div class="info-card p-3 mono text-[10.5px] uppercase tracking-[0.18em] text-slate-300">№ 03 — Ключевая задача</div>
+          <div class="mb-12 max-w-xl">
+            <h3 class="text-3xl font-semibold md:text-4xl" style="text-wrap:balance">Обсудим задачу</h3>
+            <p class="mt-4 text-sm text-slate-400">Выберите удобный способ — перезвоним за 20 минут или подготовим предложение под ваш объект.</p>
+          </div>
+
+          <div class="grid gap-6 items-start lg:grid-cols-2 lg:gap-8">
+
+            <!-- Форма 1: перезвон — доминирующая -->
+            <div class="cta-panel-primary relative p-8 lg:p-10">
+              <div class="mb-6 flex items-center gap-3">
+                <span class="status-pill is-ready"><span class="dot" aria-hidden="true"></span>Ответим за 20 минут</span>
               </div>
+              <h4 class="text-2xl font-semibold">Перезвоним бесплатно</h4>
+              <p class="mt-2 mb-8 text-sm text-slate-400">Оставьте номер — проконсультируем по вашему объекту.</p>
+              <form id="form-callback" novalidate class="space-y-4">
+                <div>
+                  <label for="cb-phone" class="mono text-[10px] uppercase tracking-[0.2em] text-slate-400 block mb-2">Телефон</label>
+                  <input id="cb-phone" name="phone" type="tel" placeholder="+7 (___) ___-__-__" autocomplete="tel" class="cta-phone-input" required />
+                </div>
+                <button type="submit" class="btn-primary w-full justify-center">
+                  Перезвоните мне <span aria-hidden="true">[→]</span>
+                </button>
+                <p id="cb-status" class="mono text-[10.5px] text-slate-400 hidden pt-1"></p>
+              </form>
             </div>
-            <form class="frame-corners relative border border-slate-700/70 bg-slate-900/40 p-6 space-y-5" action="#" method="post">
-              <span class="fc-tr"></span><span class="fc-bl"></span>
-              <label class="form-field" for="cta-object">
-                <span class="field-label"><span><span class="field-num">№ 01</span> · Тип объекта</span><span class="mono text-slate-500">char ≤ 120</span></span>
-                <input id="cta-object" name="object" placeholder="Завод, БЦ, жилой комплекс..." />
-                <span class="field-rule" aria-hidden="true"></span>
-              </label>
-              <label class="form-field" for="cta-lod">
-                <span class="field-label"><span><span class="field-num">№ 02</span> · Целевой уровень детализации</span><span class="mono text-slate-500">LOD 100–500</span></span>
-                <input id="cta-lod" name="lod" placeholder="LOD 300 / LOD 400" />
-                <span class="field-rule" aria-hidden="true"></span>
-              </label>
-              <label class="form-field" for="cta-goal">
-                <span class="field-label"><span><span class="field-num">№ 03</span> · Ключевая задача</span><span class="mono text-slate-500">free text</span></span>
-                <textarea id="cta-goal" name="goal" placeholder="Координация инженерных систем, поиск коллизий, реверс-инжиниринг..."></textarea>
-                <span class="field-rule" aria-hidden="true"></span>
-              </label>
-              <button type="submit" class="btn-tech w-full justify-center">
-                Отправить запрос <span aria-hidden="true">[→]</span>
-              </button>
-            </form>
+
+            <!-- Форма 2: бриф — вторичная -->
+            <div class="border border-slate-800/60 bg-slate-900/30 p-8 lg:p-10">
+              <p class="mono text-[10px] uppercase tracking-[0.22em] text-slate-500 mb-6">Подробно</p>
+              <h4 class="text-xl font-semibold">Описать задачу</h4>
+              <p class="mt-2 mb-8 text-sm text-slate-400">Расскажите об объекте — подготовим техническое предложение и дорожную карту.</p>
+              <form id="form-brief" novalidate class="space-y-4">
+                <label class="form-field" for="br-object">
+                  <span class="field-label"><span>Тип объекта</span></span>
+                  <input id="br-object" name="object" placeholder="Завод, БЦ, жилой комплекс..." />
+                </label>
+                <label class="form-field" for="br-lod">
+                  <span class="field-label"><span>Целевой LOD</span></span>
+                  <input id="br-lod" name="lod" placeholder="LOD 300 / LOD 400" />
+                </label>
+                <label class="form-field" for="br-goal">
+                  <span class="field-label"><span>Задача</span></span>
+                  <textarea id="br-goal" name="goal" placeholder="Координация систем, поиск коллизий, реверс-инжиниринг..."></textarea>
+                </label>
+                <label class="form-field" for="br-contact">
+                  <span class="field-label"><span>Телефон или e-mail</span></span>
+                  <input id="br-contact" name="contact" placeholder="+7 или name@company.ru" required />
+                </label>
+                <button type="submit" class="btn-tech btn-ghost w-full justify-center">
+                  Отправить бриф <span aria-hidden="true">[→]</span>
+                </button>
+                <p id="br-status" class="mono text-[10.5px] text-slate-400 hidden pt-1"></p>
+              </form>
+            </div>
+
           </div>
         </div>
       </section>
@@ -1427,7 +531,7 @@
       <section class="px-6 pb-12 md:px-10 lg:px-12" aria-label="Основная надпись">
         <div class="mx-auto max-w-[90rem]">
           <div class="mb-4 flex justify-end">
-            <img class="brand-logo-stamp" src="./лого ГеоВектор белый.png" alt="ГеоВектор" />
+            <img class="brand-logo-stamp" src="./assets/images/logo.png" alt="ГеоВектор" />
           </div>
           <div class="title-stamp">
             <div>
@@ -1451,731 +555,10 @@
       </section>
     </main>
 
-    <script>
-      (() => {
-        const KEY = "gv-theme";
-        const btn = document.getElementById("themeToggle");
-        const label = document.getElementById("themeLabel");
-        const root = document.documentElement;
-        function fogColorFor(theme) {
-          return theme === "light" ? 0xfbf8ef : 0x0b0f16;
-        }
-        function dispatch(theme) {
-          window.dispatchEvent(
-            new CustomEvent("gv-theme-change", {
-              detail: { theme, fog: fogColorFor(theme) },
-            }),
-          );
-        }
-        function apply(theme) {
-          if (theme === "light") {
-            root.dataset.theme = "light";
-            if (label) label.textContent = "Dark";
-            if (btn) btn.setAttribute("aria-label", "Тёмная тема");
-          } else {
-            delete root.dataset.theme;
-            if (label) label.textContent = "Light";
-            if (btn) btn.setAttribute("aria-label", "Светлая тема");
-          }
-          dispatch(theme);
-        }
-        let saved = "dark";
-        try {
-          saved = localStorage.getItem(KEY) || "dark";
-        } catch (e) {}
-        apply(saved);
-        if (btn) {
-          btn.addEventListener("click", () => {
-            const next = root.dataset.theme === "light" ? "dark" : "light";
-            try {
-              localStorage.setItem(KEY, next);
-            } catch (e) {}
-            apply(next);
-          });
-        }
-      })();
+    <script src="./assets/js/theme.js" defer></script>
 
-      (() => {
-        const bar = document.getElementById("scrollProgress");
-        if (!bar) return;
-        const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
-        let raf = 0;
-        function update() {
-          raf = 0;
-          const doc = document.documentElement;
-          const max = doc.scrollHeight - window.innerHeight;
-          const pct = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-          bar.style.width = (pct * 100).toFixed(2) + "%";
-        }
-        function onScroll() {
-          if (reduced) {
-            update();
-            return;
-          }
-          if (raf) return;
-          raf = requestAnimationFrame(update);
-        }
-        update();
-        window.addEventListener("scroll", onScroll, { passive: true });
-        window.addEventListener("resize", onScroll, { passive: true });
-      })();
-    </script>
-
-    <script type="module">
-      import * as THREE from "./vendor/three.module.js";
-      import { PLYLoader } from "./vendor/PLYLoader.mjs";
-
-      gsap.registerPlugin(ScrollTrigger);
-
-      const canvas = document.getElementById("sceneCanvas");
-      const modelStatus = document.getElementById("modelStatus");
-      const modelStatusText = modelStatus?.querySelector(".status-text");
-      const modelBadge = document.getElementById("hudFile");
-      function setModelStatus(text, mode) {
-        if (modelStatusText) modelStatusText.textContent = text;
-        if (modelStatus) {
-          modelStatus.classList.toggle("is-loading", mode === "loading");
-          modelStatus.classList.toggle("is-ready", mode === "ready");
-        }
-      }
-      const modelPreset = document.getElementById("modelPreset");
-      const qualityPreset = document.getElementById("qualityPreset");
-      const chaosPreset = document.getElementById("chaosPreset");
-      const stylePreset = document.getElementById("stylePreset");
-      const stepCards = Array.from(document.querySelectorAll(".step-card"));
-      const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
-
-      const scene = new THREE.Scene();
-      const initialFog = document.documentElement.dataset.theme === "light" ? 0xfbf8ef : 0x0b0f16;
-      scene.fog = new THREE.Fog(initialFog, 4.6, 12.8);
-      window.addEventListener("gv-theme-change", (e) => {
-        if (scene.fog && e.detail && typeof e.detail.fog === "number") {
-          scene.fog.color.setHex(e.detail.fog);
-        }
-      });
-
-      const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-      camera.position.set(0, 0.16, 2.62);
-
-      const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: "high-performance" });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-
-      const ambient = new THREE.AmbientLight(0xffffff, 0.85);
-      scene.add(ambient);
-      const key = new THREE.DirectionalLight(0x9ad7ff, 0.9);
-      key.position.set(3, 2, 2);
-      scene.add(key);
-
-      const root = new THREE.Group();
-      scene.add(root);
-
-      let points = null;
-      let beam = null;
-      let pointCount = 0;
-      let outPositions = null;
-      let pointAttr = null;
-      let modelPositions = null;
-      let chaosPositions = null;
-      let colorAttr = null;
-      let baseColorAttr = null;
-      let noiseVec = null;
-      let noisePhase = null;
-      let chaosFlowPhase = null;
-      let chaosFlowSpread = 1;
-      let clock = new THREE.Clock();
-      let lastColorMix = -1;
-
-      const state = {
-        morph: 0,
-        chaos: 1,
-        colorMix: 0,
-        opacity: 1,
-        pointSize: 0.018,
-        beamIntensity: 1,
-        finalClarity: 0,
-        visibleRatio: 0.42,
-        yLift: 0.42,
-        gridSnap: 0,
-      };
-
-      const startNeon = new THREE.Color(0xffffff);
-      const cTmp = new THREE.Color();
-      const vividTmp = new THREE.Color();
-      const hslTmp = { h: 0, s: 0, l: 0 };
-      let pointSprite = null;
-      let scrollInitialized = false;
-      let currentPreset = "100k";
-      let currentStylePreset = "original";
-      let currentModelPreset = "besedka";
-      let currentChaosPreset = "sphere";
-      let loadTicket = 0;
-
-      function fitRenderer() {
-        const rect = canvas.getBoundingClientRect();
-        const width = Math.max(1, rect.width);
-        const height = Math.max(1, rect.height);
-        renderer.setSize(width, height, false);
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-      }
-
-      function activateCard(index) {
-        stepCards.forEach((card, i) => {
-          const isActive = i === index;
-          card.classList.toggle("active", isActive);
-          card.classList.toggle("dimmed", !isActive);
-        });
-      }
-
-      function targetPointsForPreset() {
-        return currentPreset === "1m" ? 1_000_000 : 100_000;
-      }
-
-      function samplePositions(src, wantedCount) {
-        const srcCount = src.length / 3;
-        const count = Math.max(1, wantedCount);
-        const out = new Float32Array(count * 3);
-        if (count <= srcCount) {
-          const stride = srcCount / count;
-          for (let i = 0; i < count; i += 1) {
-            const idx = Math.floor(i * stride) * 3;
-            out[i * 3] = src[idx];
-            out[i * 3 + 1] = src[idx + 1];
-            out[i * 3 + 2] = src[idx + 2];
-          }
-        } else {
-          for (let i = 0; i < count; i += 1) {
-            const srcI = Math.floor(Math.random() * srcCount) * 3;
-            const j = 0.0025;
-            out[i * 3] = src[srcI] + (Math.random() - 0.5) * j;
-            out[i * 3 + 1] = src[srcI + 1] + (Math.random() - 0.5) * j;
-            out[i * 3 + 2] = src[srcI + 2] + (Math.random() - 0.5) * j;
-          }
-        }
-        return out;
-      }
-
-      function sampleColors(src, wantedCount) {
-        const srcCount = src.length / 3;
-        const count = Math.max(1, wantedCount);
-        const out = new Float32Array(count * 3);
-        if (count <= srcCount) {
-          const stride = srcCount / count;
-          for (let i = 0; i < count; i += 1) {
-            const idx = Math.floor(i * stride) * 3;
-            out[i * 3] = src[idx];
-            out[i * 3 + 1] = src[idx + 1];
-            out[i * 3 + 2] = src[idx + 2];
-          }
-        } else {
-          for (let i = 0; i < count; i += 1) {
-            const srcI = Math.floor(Math.random() * srcCount) * 3;
-            out[i * 3] = src[srcI];
-            out[i * 3 + 1] = src[srcI + 1];
-            out[i * 3 + 2] = src[srcI + 2];
-          }
-        }
-        return out;
-      }
-
-      function makeShuffledIndices(count) {
-        const indices = new Uint32Array(count);
-        for (let i = 0; i < count; i += 1) indices[i] = i;
-        for (let i = count - 1; i > 0; i -= 1) {
-          const j = Math.floor(Math.random() * (i + 1));
-          const tmp = indices[i];
-          indices[i] = indices[j];
-          indices[j] = tmp;
-        }
-        return indices;
-      }
-
-      function remapTriplets(src, indices) {
-        const out = new Float32Array(src.length);
-        for (let i = 0; i < indices.length; i += 1) {
-          const from = indices[i] * 3;
-          const to = i * 3;
-          out[to] = src[from];
-          out[to + 1] = src[from + 1];
-          out[to + 2] = src[from + 2];
-        }
-        return out;
-      }
-
-      function createChaosPositions(target, preset = "sphere") {
-        const out = new Float32Array(target.length);
-        chaosFlowPhase = null;
-        let radius = 0;
-        for (let i = 0; i < target.length; i += 3) {
-          const r = Math.hypot(target[i], target[i + 1], target[i + 2]);
-          if (r > radius) radius = r;
-        }
-        const spread = Math.max(1, radius * 0.44);
-        chaosFlowSpread = spread;
-
-        if (preset === "infinity") {
-          const a = spread * 0.62;
-          const phases = new Float32Array(target.length / 3);
-          for (let i = 0; i < target.length; i += 3) {
-            const t = Math.random() * Math.PI * 2;
-            const x = a * Math.sin(t);
-            const y = a * Math.sin(t) * Math.cos(t) * 0.56;
-            const z = spread * 0.05 * Math.cos(2 * t);
-            out[i] = x + (Math.random() - 0.5) * spread * 0.06;
-            out[i + 1] = y + (Math.random() - 0.5) * spread * 0.06;
-            out[i + 2] = z + (Math.random() - 0.5) * spread * 0.04;
-            phases[i / 3] = t + (Math.random() - 0.5) * 0.25;
-          }
-          chaosFlowPhase = phases;
-          return out;
-        }
-
-        if (preset === "wind") {
-          const lanes = 24;
-          for (let i = 0; i < target.length; i += 3) {
-            const lane = Math.floor(Math.random() * lanes);
-            const laneY = (lane / (lanes - 1) - 0.5) * spread * 0.62;
-            const t = Math.random();
-            const x = (t - 0.5) * spread * 1.04;
-            const phase = t * Math.PI * 5.2 + lane * 0.45;
-            out[i] = x;
-            out[i + 1] = laneY + Math.sin(phase) * spread * 0.05 + (Math.random() - 0.5) * spread * 0.025;
-            out[i + 2] = Math.cos(phase * 0.82) * spread * 0.13 + (Math.random() - 0.5) * spread * 0.04;
-          }
-          return out;
-        }
-
-        if (preset === "tachymeter") {
-          const headR = spread * 0.2;
-          const bodyH = spread * 0.44;
-          for (let i = 0; i < target.length; i += 3) {
-            const zone = Math.random();
-            if (zone < 0.42) {
-              const a = Math.random() * Math.PI * 2;
-              const r = headR * (0.3 + Math.random() * 0.7);
-              out[i] = Math.cos(a) * r;
-              out[i + 1] = bodyH * 0.35 + (Math.random() - 0.5) * spread * 0.06;
-              out[i + 2] = Math.sin(a) * r;
-            } else if (zone < 0.74) {
-              const h = (Math.random() - 0.5) * bodyH;
-              out[i] = (Math.random() - 0.5) * spread * 0.16;
-              out[i + 1] = h;
-              out[i + 2] = (Math.random() - 0.5) * spread * 0.12;
-            } else {
-              const leg = Math.floor(Math.random() * 3);
-              const f = Math.random();
-              const ang = leg * (Math.PI * 2 / 3) + Math.PI / 6;
-              const rx = Math.cos(ang) * spread * 0.34;
-              const rz = Math.sin(ang) * spread * 0.34;
-              out[i] = rx * f + (Math.random() - 0.5) * spread * 0.03;
-              out[i + 1] = -bodyH * 0.05 - f * spread * 0.58 + (Math.random() - 0.5) * spread * 0.04;
-              out[i + 2] = rz * f + (Math.random() - 0.5) * spread * 0.03;
-            }
-          }
-          return out;
-        }
-
-        for (let i = 0; i < target.length; i += 3) {
-          const u = Math.random();
-          const v = Math.random();
-          const w = Math.random();
-          const theta = 2 * Math.PI * u;
-          const phi = Math.acos(2 * v - 1);
-          const rr = spread * (0.1 + Math.cbrt(w) * 0.45);
-          out[i] = rr * Math.sin(phi) * Math.cos(theta) * 0.86;
-          out[i + 1] = rr * Math.cos(phi) * 0.78;
-          out[i + 2] = rr * Math.sin(phi) * Math.sin(theta);
-        }
-        return out;
-      }
-
-      function createNoise(count) {
-        const vectors = new Float32Array(count * 3);
-        const phases = new Float32Array(count);
-        for (let i = 0; i < count; i += 1) {
-          const k = i * 3;
-          let x = Math.random() * 2 - 1;
-          let y = Math.random() * 2 - 1;
-          let z = Math.random() * 2 - 1;
-          const len = Math.hypot(x, y, z) || 1;
-          vectors[k] = x / len;
-          vectors[k + 1] = y / len;
-          vectors[k + 2] = z / len;
-          phases[i] = Math.random() * Math.PI * 2;
-        }
-        return { vectors, phases };
-      }
-
-      function makeRoundPointSprite(size = 64) {
-        const spriteCanvas = document.createElement("canvas");
-        spriteCanvas.width = size;
-        spriteCanvas.height = size;
-        const ctx = spriteCanvas.getContext("2d");
-        if (!ctx) return null;
-        const center = size / 2;
-        const grad = ctx.createRadialGradient(center, center, 0, center, center, center);
-        grad.addColorStop(0, "rgba(255,255,255,1)");
-        grad.addColorStop(0.35, "rgba(255,255,255,0.95)");
-        grad.addColorStop(0.7, "rgba(255,255,255,0.35)");
-        grad.addColorStop(1, "rgba(255,255,255,0)");
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, size, size);
-        const tex = new THREE.CanvasTexture(spriteCanvas);
-        tex.needsUpdate = true;
-        return tex;
-      }
-
-      function updateColorsIfNeeded(force = false) {
-        if (!colorAttr || !baseColorAttr) return;
-        if (!force && Math.abs(state.colorMix - lastColorMix) < 0.035) return;
-        lastColorMix = state.colorMix;
-        for (let i = 0; i < pointCount; i += 1) {
-          const r = baseColorAttr.getX(i);
-          const g = baseColorAttr.getY(i);
-          const b = baseColorAttr.getZ(i);
-          vividTmp.setRGB(r, g, b);
-          vividTmp.getHSL(hslTmp);
-          hslTmp.s = Math.max(0.78, hslTmp.s);
-          hslTmp.l = Math.max(0.58, hslTmp.l);
-          vividTmp.setHSL(hslTmp.h, hslTmp.s, hslTmp.l);
-          cTmp.copy(startNeon).lerp(vividTmp, state.colorMix);
-          colorAttr.setXYZ(i, cTmp.r, cTmp.g, cTmp.b);
-        }
-        colorAttr.needsUpdate = true;
-      }
-
-      function setupScroll() {
-        if (scrollInitialized) return;
-        scrollInitialized = true;
-        const section = document.getElementById("scrolly");
-        ScrollTrigger.create({
-          trigger: section,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 0.7,
-          onUpdate: (self) => {
-            const p = self.progress;
-            state.morph = THREE.MathUtils.smoothstep(p, 0.0, 0.9);
-            state.colorMix = THREE.MathUtils.smoothstep(p, 0.08, 0.32);
-            state.chaos = 1 - THREE.MathUtils.smoothstep(p, 0.01, 0.68);
-            state.beamIntensity = 1 - THREE.MathUtils.smoothstep(p, 0.18, 0.46);
-            state.finalClarity = THREE.MathUtils.smoothstep(p, 0.72, 1);
-            const snapProgress = THREE.MathUtils.smoothstep(p, 0.74, 1);
-            state.gridSnap = currentStylePreset === "grid" ? snapProgress : 0;
-            const targetVisibleProgress = THREE.MathUtils.smoothstep(p, 0.0, 0.84);
-            const startRatio = Math.min(1, 100000 / Math.max(1, pointCount));
-            state.visibleRatio = startRatio + targetVisibleProgress * (1 - startRatio);
-            state.opacity = 1;
-            state.pointSize = 0.018 - THREE.MathUtils.smoothstep(p, 0.58, 1) * 0.0032;
-            state.yLift = 0.42 * (1 - THREE.MathUtils.smoothstep(p, 0.02, 0.58));
-            activateCard(Math.min(3, Math.floor(p * 4)));
-          },
-        });
-
-        stepCards.forEach((card) => {
-          ScrollTrigger.create({
-            trigger: card,
-            start: "top 94%",
-            end: "bottom 10%",
-            scrub: 0.75,
-            onUpdate: (self) => {
-              const p = self.progress;
-              const enterPhase = Math.min(1, p / 0.35);
-              const exitPhase = Math.max(0, (p - 0.65) / 0.35);
-
-              const y = gsap.utils.interpolate(56, 0, enterPhase);
-              const enterOpacity = gsap.utils.interpolate(0, 1, enterPhase);
-              const exitOpacity = gsap.utils.interpolate(1, 0.08, exitPhase);
-              const opacity = p < 0.65 ? enterOpacity : exitOpacity;
-              const blur = p < 0.35 ? gsap.utils.interpolate(12, 0, enterPhase) : gsap.utils.interpolate(0, 4, exitPhase);
-
-              card.style.transform = `translate3d(0, ${y}px, 0)`;
-              card.style.opacity = String(opacity);
-              card.style.filter = `blur(${blur}px)`;
-            },
-          });
-        });
-      }
-
-      function buildPointScene(srcPos, srcColor) {
-        if (points) {
-          root.remove(points);
-          points.geometry.dispose();
-          points.material.dispose();
-          points = null;
-        }
-
-        const maxPoints = targetPointsForPreset();
-        const sampledPos = samplePositions(srcPos, maxPoints);
-        pointCount = sampledPos.length / 3;
-        const sampledColors = sampleColors(srcColor, pointCount);
-        const shuffled = makeShuffledIndices(pointCount);
-        modelPositions = remapTriplets(sampledPos, shuffled);
-        const remappedColors = remapTriplets(sampledColors, shuffled);
-        chaosPositions = createChaosPositions(modelPositions, currentChaosPreset);
-        outPositions = chaosPositions.slice(0);
-
-        const geometry = new THREE.BufferGeometry();
-        pointAttr = new THREE.BufferAttribute(outPositions, 3);
-        colorAttr = new THREE.BufferAttribute(remappedColors.slice(0), 3);
-        baseColorAttr = new THREE.BufferAttribute(remappedColors.slice(0), 3);
-        geometry.setAttribute("position", pointAttr);
-        geometry.setAttribute("color", colorAttr);
-        geometry.setAttribute("baseColor", baseColorAttr);
-        state.visibleRatio = Math.min(1, 100000 / Math.max(1, pointCount));
-        geometry.setDrawRange(0, Math.floor(pointCount * state.visibleRatio));
-        pointSprite = makeRoundPointSprite(64);
-
-        points = new THREE.Points(
-          geometry,
-          new THREE.PointsMaterial({
-            size: state.pointSize,
-            vertexColors: true,
-            transparent: true,
-            opacity: state.opacity,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending,
-            map: pointSprite,
-            alphaMap: pointSprite,
-            alphaTest: 0.02,
-          }),
-        );
-        root.add(points);
-
-        const noise = createNoise(pointCount);
-        noiseVec = noise.vectors;
-        noisePhase = noise.phases;
-
-        setModelStatus(`Модель загружена • ${pointCount.toLocaleString()} точек`, "ready");
-        if (modelBadge) modelBadge.textContent = getBadgeText();
-        updateColorsIfNeeded(true);
-        activateCard(0);
-        setupScroll();
-      }
-
-      const loader = new PLYLoader();
-      const modelSources = {
-        besedka: {
-          badge: { "100k": "BESEDKA_WEB_100K.PLY", "1m": "BESEDKA_WEB_1M.PLY" },
-          presets: { "100k": "models/Besedka_web_100k.ply", "1m": "models/Besedka_web_1m.ply" },
-          fallback: ["models/Mesh_web_100k.ply", "models/Model.ply"],
-        },
-        mesh: {
-          badge: { "100k": "MESH_WEB_100K.PLY", "1m": "MESH_WEB_1M.PLY" },
-          presets: { "100k": "models/Mesh_web_100k.ply", "1m": "models/Mesh_web_1m.ply" },
-          fallback: [encodeURI("models/Mesh[Объект - 2.00 mm] (level 11).ply"), "models/Model.ply"],
-        },
-      };
-
-      function getActiveSource() {
-        return modelSources[currentModelPreset] || modelSources.besedka;
-      }
-
-      function getBadgeText() {
-        const source = getActiveSource();
-        return source.badge[currentPreset] || source.badge["100k"];
-      }
-
-      function onGeometryLoaded(geometry, ticket) {
-          if (ticket !== loadTicket) return;
-          geometry.computeBoundingBox();
-          geometry.center();
-          geometry.rotateX(-Math.PI / 2);
-          geometry.computeBoundingSphere();
-          const radius = geometry.boundingSphere?.radius || 1;
-          const scale = 0.76 / Math.max(0.001, radius);
-          geometry.scale(scale, scale, scale);
-
-          const pos = geometry.getAttribute("position").array;
-          const srcColorAttr = geometry.getAttribute("color");
-          let colors = null;
-          if (srcColorAttr) {
-            colors = srcColorAttr.array.slice(0);
-          } else {
-            colors = new Float32Array((pos.length / 3) * 3);
-            for (let i = 0; i < colors.length; i += 3) {
-              colors[i] = 0.2 + Math.random() * 0.8;
-              colors[i + 1] = 0.45 + Math.random() * 0.55;
-              colors[i + 2] = 0.55 + Math.random() * 0.45;
-            }
-          }
-          buildPointScene(pos, colors);
-      }
-
-      function onGeometryError(error, ticket) {
-          if (ticket !== loadTicket) return;
-          setModelStatus("Ошибка PLY: fallback", "loading");
-          console.error("PLY load error:", error);
-          const fallback = new THREE.TorusKnotGeometry(0.85, 0.25, 360, 36);
-          const posAttr = fallback.getAttribute("position");
-          const pos = new Float32Array(posAttr.count * 3);
-          const colors = new Float32Array(posAttr.count * 3);
-          for (let i = 0; i < posAttr.count; i += 1) {
-            pos[i * 3] = posAttr.getX(i);
-            pos[i * 3 + 1] = posAttr.getY(i);
-            pos[i * 3 + 2] = posAttr.getZ(i);
-            colors[i * 3] = 0.6;
-            colors[i * 3 + 1] = 0.7;
-            colors[i * 3 + 2] = 0.85;
-          }
-          buildPointScene(pos, colors);
-      }
-
-      function loadModelPreset() {
-        loadTicket += 1;
-        const ticket = loadTicket;
-        const source = getActiveSource();
-        const primaryPath = source.presets[currentPreset] || source.presets["100k"];
-        const fallbackChain = source.fallback || [];
-        setModelStatus("Загрузка модели...", "loading");
-        if (modelBadge) modelBadge.textContent = getBadgeText();
-        loader.load(
-          primaryPath,
-          (g) => onGeometryLoaded(g, ticket),
-          undefined,
-          () => {
-            const [firstFallback, secondFallback] = fallbackChain;
-            if (firstFallback) {
-              loader.load(
-                firstFallback,
-                (g) => onGeometryLoaded(g, ticket),
-                undefined,
-                () => {
-                  if (secondFallback) {
-                    loader.load(secondFallback, (g) => onGeometryLoaded(g, ticket), undefined, (e) => onGeometryError(e, ticket));
-                  } else {
-                    onGeometryError(new Error("Fallback model missing"), ticket);
-                  }
-                },
-              );
-            } else {
-              onGeometryError(new Error("No model preset fallback configured"), ticket);
-            }
-          },
-        );
-      }
-
-      if (modelPreset) {
-        modelPreset.value = currentModelPreset;
-        modelPreset.addEventListener("change", (e) => {
-          currentModelPreset = e.target.value === "mesh" ? "mesh" : "besedka";
-          loadModelPreset();
-        });
-      }
-
-      if (qualityPreset) {
-        qualityPreset.value = currentPreset;
-        qualityPreset.addEventListener("change", (e) => {
-          currentPreset = e.target.value === "1m" ? "1m" : "100k";
-          loadModelPreset();
-        });
-      }
-
-      if (chaosPreset) {
-        chaosPreset.value = currentChaosPreset;
-        chaosPreset.addEventListener("change", (e) => {
-          currentChaosPreset = e.target.value || "sphere";
-          if (modelPositions) chaosPositions = createChaosPositions(modelPositions, currentChaosPreset);
-        });
-      }
-
-      if (stylePreset) {
-        stylePreset.value = currentStylePreset;
-        stylePreset.addEventListener("change", (e) => {
-          currentStylePreset = e.target.value === "grid" ? "grid" : "original";
-        });
-      }
-
-      loadModelPreset();
-
-      function animate() {
-        const t = clock.getElapsedTime();
-        const lockInfinityRotation = currentChaosPreset === "infinity" && state.chaos > 0.08;
-        if (!lockInfinityRotation) {
-          root.rotation.y += prefersReduced ? 0.0006 : 0.0024;
-        }
-        root.position.y = state.yLift;
-
-        if (points && pointAttr && modelPositions && chaosPositions) {
-          const m = state.morph;
-          const inv = 1 - m;
-          const chaosAmp = 0.036 * state.chaos * (0.55 + 0.45 * (1 - state.visibleRatio));
-          const gridStep = 0.012;
-          const gridSnap = state.gridSnap;
-          const visibleCount = Math.max(1, Math.floor(pointCount * state.visibleRatio));
-          const isInfinityPreset = currentChaosPreset === "infinity";
-          for (let i = 0; i < visibleCount; i += 1) {
-            const k = i * 3;
-            const wobbleBase = chaosAmp * (0.5 + 0.5 * Math.sin(t * 2.2 + noisePhase[i]));
-            const wobble = isInfinityPreset ? wobbleBase * 0.18 : wobbleBase;
-            let x = chaosPositions[k] * inv + modelPositions[k] * m + noiseVec[k] * wobble;
-            let y = chaosPositions[k + 1] * inv + modelPositions[k + 1] * m + noiseVec[k + 1] * wobble;
-            let z = chaosPositions[k + 2] * inv + modelPositions[k + 2] * m + noiseVec[k + 2] * wobble;
-
-            if (state.chaos > 0.001) {
-              if (currentChaosPreset === "infinity" && chaosFlowPhase && chaosFlowPhase[i] !== undefined) {
-                const tt = chaosFlowPhase[i] + t * 0.55 * state.chaos;
-                const aInf = chaosFlowSpread * 0.62;
-                const fx = aInf * Math.sin(tt);
-                const fy = aInf * Math.sin(tt) * Math.cos(tt) * 0.56;
-                x = THREE.MathUtils.lerp(x, fx, 0.9 * state.chaos);
-                y = THREE.MathUtils.lerp(y, fy, 0.9 * state.chaos);
-                z = THREE.MathUtils.lerp(z, chaosPositions[k + 2], 0.9 * state.chaos);
-              } else if (currentChaosPreset === "wind") {
-                const flowAmp = 0.07 * state.chaos;
-                y += Math.sin(x * 6.5 + t * 2.1 + noisePhase[i]) * flowAmp;
-                z += Math.cos(x * 4.2 - t * 1.7 + noisePhase[i] * 0.7) * flowAmp * 0.85;
-              }
-            }
-
-            if (gridSnap > 0) {
-              const gx = Math.round(x / gridStep) * gridStep;
-              const gy = Math.round(y / gridStep) * gridStep;
-              const gz = Math.round(z / gridStep) * gridStep;
-              x = THREE.MathUtils.lerp(x, gx, gridSnap);
-              y = THREE.MathUtils.lerp(y, gy, gridSnap);
-              z = THREE.MathUtils.lerp(z, gz, gridSnap);
-            }
-
-            outPositions[k] = x;
-            outPositions[k + 1] = y;
-            outPositions[k + 2] = z;
-          }
-          pointAttr.needsUpdate = true;
-          points.material.size = state.pointSize;
-          points.material.opacity = state.opacity;
-          points.material.blending = THREE.NormalBlending;
-          points.material.depthWrite = true;
-          points.geometry.setDrawRange(0, visibleCount);
-          updateColorsIfNeeded();
-        }
-        renderer.render(scene, camera);
-        requestAnimationFrame(animate);
-      }
-
-      window.addEventListener("resize", fitRenderer);
-      fitRenderer();
-      animate();
-    </script>
-    <script>
-      const insightLinks = Array.from(document.querySelectorAll("#insights .toc-link"));
-      const insightSections = insightLinks
-        .map((link) => document.querySelector(link.getAttribute("href")))
-        .filter(Boolean);
-
-      const insightObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-            const id = `#${entry.target.id}`;
-            insightLinks.forEach((link) => link.classList.toggle("active", link.getAttribute("href") === id));
-          });
-        },
-        { rootMargin: "-45% 0px -45% 0px", threshold: 0.01 },
-      );
-
-      insightSections.forEach((section) => insightObserver.observe(section));
-      if (insightLinks[0]) insightLinks[0].classList.add("active");
-    </script>
+    <script type="module" src="./assets/js/scene.js"></script>
+    <script src="./assets/js/insights.js" defer></script>
+    <script src="./assets/js/forms.js" defer></script>
   </body>
 </html>
